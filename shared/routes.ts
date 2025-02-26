@@ -8,3 +8,18 @@ export const appRoutes = {
         logout: '/logout',
     },
 }
+
+export const adminRoutes = {
+    auth: {
+        login: '/login',
+    },
+    app: {
+        dashboard: '/',
+        users: '/users',
+        verifications: '/verifications',
+        transactions: '/transactions',
+        admins: '/admins',
+        logout: '/logout',
+        settings: '/settings',
+    },
+}

@@ -75,14 +75,14 @@ export default function SettingsPage({ user }: Props) {
 
     return (
         <AppLayout>
-            <div className="max-w-4xl space-y-6">
+            <div className="max-w-4xl space-y-6 flex-1 flex flex-col">
                 <header>
-                    <h1 className="text-2xl font-bold">Settings</h1>
+                    <h1 className="text-xl font-semibold">Settings</h1>
                 </header>
 
-                <Card>
+                <Card className="bg-muted/30 shadow-none">
                     <CardHeader>
-                        <CardTitle>Profile Photo</CardTitle>
+                        <CardTitle className="text-base">Profile Photo</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div
@@ -139,9 +139,9 @@ export default function SettingsPage({ user }: Props) {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="bg-muted/30 shadow-none">
                     <CardHeader>
-                        <CardTitle>Profile Information</CardTitle>
+                        <CardTitle className="text-base">Profile Information</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleSubmit} className="space-y-4">
@@ -165,13 +165,13 @@ export default function SettingsPage({ user }: Props) {
                                 <Label htmlFor="phone">Phone Number</Label>
                                 <Input id="phone" name="phone" defaultValue={user.phone} />
                             </div>
-
-                            <Button type="submit" disabled={isLoading} className="w-full">
-                                Save Changes
-                            </Button>
                         </form>
                     </CardContent>
                 </Card>
+
+                <Button type="submit" disabled={isLoading} className="w-full">
+                    Save Changes
+                </Button>
             </div>
         </AppLayout>
     )

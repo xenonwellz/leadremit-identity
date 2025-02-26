@@ -99,7 +99,7 @@ export default class AppController {
     }
 
     async logout(ctx: HttpContext) {
-        await ctx.auth.use('web').logout()
+        await ctx.auth.use('user').logout()
         return ctx.response.redirect().toPath(appRoutes.auth.login)
     }
 }

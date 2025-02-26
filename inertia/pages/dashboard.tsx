@@ -1,114 +1,110 @@
-import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Scan, Coins } from 'lucide-react'
-import { VerificationTable } from '@/components/verification-table'
 import AppLayout from '@/layouts/app.layout'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { VerificationTable } from '@/components/verification-table'
+import { LineChart } from '@/components/ui/charts'
+import { Button } from '@/components/ui/button'
+import { Plus, Coins, UserCheck, Clock } from 'lucide-react'
+import { router } from '@inertiajs/react'
 
-export default function Home() {
-    // Data for the dashboard statistic cards.
-    const verificationStats = [
+interface Stats {
+    total_calls: number
+    successful_calls: number
+    failed_calls: number
+    token_balance: number
+}
+
+interface Props {
+    stats: Stats
+    recent_verifications: any[]
+}
+
+export default function DashboardPage({ stats }: Props) {
+    const handleBuyTokens = () => {
+        router.visit('/tokens', { only: ['token_history'] })
+    }
+
+    const statCards = [
         {
-            cardVariant: 'default',
-            title: 'Total Verification',
-            count: 41,
-            footerText: 'From Jan 21, 2024',
-            Icon: Scan,
+            title: 'Token Balance',
+            value: stats.token_balance,
+            icon: Coins,
+            color: 'bg-blue-500',
+            action: (
+                <Button
+                    size="sm"
+                    variant="outline"
+                    className="rounded-full h-8 w-8 p-0 ml-2"
+                    onClick={handleBuyTokens}
+                    title="Top up balance"
+                >
+                    <Plus className="h-4 w-4 text-primary" />
+                </Button>
+            ),
         },
         {
-            cardVariant: 'primary',
-            title: 'Successful Verification',
-            count: 50,
-            footerText: 'From Feb 1, 2024',
-            Icon: Scan,
+            title: 'Verifications',
+            value: stats.total_calls,
+            icon: UserCheck,
+            color: 'bg-green-500',
+            action: null,
         },
         {
-            cardVariant: 'destructive',
-            title: 'Failed Verification',
-            count: 5,
-            footerText: 'From Mar 1, 2024',
-            Icon: Scan,
+            title: 'Transactions',
+            value: stats.successful_calls,
+            icon: Clock,
+            color: 'bg-purple-500',
+            action: null,
         },
     ]
 
-    // Mapping each card variant to its corresponding Tailwind CSS classes.
-    const cardVariantStyles = {
-        default: {
-            cardBg: 'bg-card',
-            iconBg: 'bg-muted',
-            footerBg: 'bg-black/70',
-            footerText: 'text-primary-foreground',
-        },
-        primary: {
-            cardBg: 'bg-card',
-            iconBg: 'bg-muted text-primary/70',
-            footerBg: 'bg-primary/70',
-            footerText: 'text-white',
-        },
-        destructive: {
-            cardBg: 'bg-card',
-            iconBg: 'bg-muted text-destructive',
-            footerBg: 'bg-destructive',
-            footerText: 'text-white',
-        },
-    }
-
     return (
         <AppLayout>
-            {/* Dashboard Header */}
-            <header className="space-y-2">
-                <h1 className="text-2xl font-bold">Dashboard</h1>
-            </header>
+            <div className="space-y-6 flex-1 flex flex-col">
+                <header>
+                    <h1 className="text-xl font-semibold">Dashboard</h1>
+                </header>
 
-            {/* Render statistic cards */}
-            <div className="grid grid-cols-4 gap-4">
-                {verificationStats.map((stat, idx) => {
-                    const cardStyles =
-                        cardVariantStyles[stat.cardVariant as keyof typeof cardVariantStyles]
-                    return (
-                        <div
-                            key={idx}
-                            className={`${cardStyles.cardBg} rounded-xl flex flex-col gap-4 border justify-between overflow-hidden p-4`}
-                        >
-                            <div className="text-sm text-muted-foreground font-normal">
-                                {stat.title}
-                            </div>
-                            <div className="text-3xl font-bold flex items-center gap-4">
-                                <div className={`${cardStyles.iconBg} p-3 border rounded-md`}>
-                                    <stat.Icon />
-                                </div>
-                                {stat.count}
-                            </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Stats section - 2 columns on the left */}
+                    <div className="lg:col-span-1 space-y-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {statCards.map((card) => (
+                                <Card key={card.title} className="bg-muted/30 shadow-none">
+                                    <CardHeader className="pb-6 mb-6 border-b">
+                                        <CardTitle className="text-base flex items-center justify-between">
+                                            {card.title}
+                                            {card.action}
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="flex items-center justify-between">
+                                        <h3 className="text-2xl font-bold">{card.value}</h3>
+                                        <div className={`p-3 rounded-full ${card.color}`}>
+                                            <card.icon className="h-4 w-4 text-white" />
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))}
                         </div>
-                    )
-                })}
+                    </div>
 
-                <div className="bg-primary text-background p-6 rounded-xl flex flex-col gap-4 relative">
-                    <div className="text-sm text-muted font-normal">Token Balance</div>
-
-                    <div className="text-3xl font-bold flex items-center gap-4">
-                        <div className={`p-3 border rounded-md bg-white/20`}>
-                            <Coins />
-                        </div>
-                        1000
+                    {/* API Usage chart on the right */}
+                    <div className="lg:col-span-1">
+                        <Card className="bg-muted/30 shadow-none h-full">
+                            <CardHeader>
+                                <CardTitle className="text-base">
+                                    Verifications (Last 7 days)
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="h-[200px]">
+                                <LineChart />
+                            </CardContent>
+                        </Card>
                     </div>
                 </div>
-            </div>
 
-            {/* Credit Balance */}
-
-            {/* Verification History Table */}
-            <Card className="flex-1 overflow-auto flex flex-col">
-                <CardHeader className="sticky top-0 z-20 bg-background">
-                    <CardTitle>Verification History</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1 flex flex-col">
+                <div className="flex-1">
                     <VerificationTable />
-                </CardContent>
-            </Card>
-
-            {/* Settings Button */}
-            <div>
-                <Button>Settings</Button>
+                </div>
             </div>
         </AppLayout>
     )

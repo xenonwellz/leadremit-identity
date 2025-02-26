@@ -1,5 +1,6 @@
-import { Coins, FileText, Home, LogOut, Settings, ShieldCheck } from 'lucide-react'
+import { Coins, FileText, Home, LogOut, Settings, ShieldCheck, Users, UserCog } from 'lucide-react'
 import { Link, usePage } from '@inertiajs/react'
+import { adminRoutes } from '#shared/routes'
 
 import {
     Sidebar,
@@ -18,32 +19,37 @@ import { Button } from '@/components/ui/button'
 const items = [
     {
         title: 'Dashboard',
-        url: '/',
+        url: adminRoutes.app.dashboard,
         icon: Home,
     },
     {
-        title: 'Verify',
-        url: '/verify',
+        title: 'Users',
+        url: adminRoutes.app.users,
+        icon: Users,
+    },
+    {
+        title: 'Verifications',
+        url: adminRoutes.app.verifications,
         icon: ShieldCheck,
     },
     {
-        title: 'Tokens',
-        url: '/tokens',
+        title: 'Transactions',
+        url: adminRoutes.app.transactions,
         icon: Coins,
     },
     {
-        title: 'History',
-        url: '/history',
-        icon: FileText,
+        title: 'Administrators',
+        url: adminRoutes.app.admins,
+        icon: UserCog,
     },
     {
         title: 'Settings',
-        url: '/settings',
+        url: adminRoutes.app.settings,
         icon: Settings,
     },
 ]
 
-export function AppSidebar() {
+export function AdminSidebar() {
     const { url } = usePage()
 
     return (
@@ -54,7 +60,7 @@ export function AppSidebar() {
                     <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
                         <ShieldCheck className="h-5 w-5" />
                     </div>
-                    <span className="text-lg font-semibold">VerifyNG</span>
+                    <span className="text-lg font-semibold">Admin Panel</span>
                 </div>
             </SidebarHeader>
 
@@ -89,16 +95,15 @@ export function AppSidebar() {
 
             {/* Add logout button at the bottom */}
             <SidebarFooter className="mt-auto border-t border-sidebar-border p-2">
-                <SidebarMenuButton
-                    asChild
-                    className="transition-colors py-4 h-12 w-full"
-                    onClick={() => (window.location.href = '/logout')}
-                >
-                    <Button variant="ghost" className="w-full justify-start">
-                        <LogOut />
-                        <span>Logout</span>
-                    </Button>
-                </SidebarMenuButton>
+                <form action={adminRoutes.app.logout} method="POST">
+                    <input type="hidden" name="_method" value="DELETE" />
+                    <SidebarMenuButton asChild className="transition-colors py-4 h-12 w-full">
+                        <Button type="submit" variant="ghost" className="w-full justify-start">
+                            <LogOut />
+                            <span>Logout</span>
+                        </Button>
+                    </SidebarMenuButton>
+                </form>
             </SidebarFooter>
         </Sidebar>
     )

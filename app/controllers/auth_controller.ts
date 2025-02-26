@@ -16,14 +16,14 @@ export default class AuthController {
     async handleLogin(ctx: HttpContext) {
         const payload = await ctx.request.validateUsing(LoginValidator)
         const user = await User.verifyCredentials(payload.email, payload.password)
-        await ctx.auth.use('web').login(user)
+        await ctx.auth.use('user').login(user)
         return ctx.response.redirect().toPath(appRoutes.app.home)
     }
 
     async handleRegister(ctx: HttpContext) {
         const payload = await ctx.request.validateUsing(RegisterValidator)
         const user = await User.create(payload)
-        await ctx.auth.use('web').login(user)
+        await ctx.auth.use('user').login(user)
         return ctx.response.redirect().toPath(appRoutes.app.home)
     }
 }

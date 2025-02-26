@@ -5,6 +5,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useState } from 'react'
 import { Loader2, User } from 'lucide-react'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select'
 
 type VerificationType = 'bvn' | 'nin'
 type VerificationResult = {
@@ -44,36 +51,47 @@ export default function VerifyPage() {
 
     return (
         <AppLayout>
-            <div className="space-y-6">
+            <div className="space-y-6 flex-1 flex flex-col">
                 <header>
-                    <h1 className="text-2xl font-bold">Verify Identity</h1>
+                    <h1 className="text-xl font-semibold">Verify Identity</h1>
                 </header>
 
-                <div className="grid md:grid-cols-2 gap-6">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Verification Form</CardTitle>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 min-h-[60%]">
+                    <Card className="bg-muted/30 shadow-none !p-0">
+                        <CardHeader className="p-0">
+                            <CardTitle className="text-base p-6 border-b">
+                                Verification Form
+                            </CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-6">
-                            <div className="flex gap-4">
-                                {(['bvn', 'nin'] as const).map((method) => (
-                                    <Button
-                                        key={method}
-                                        variant={type === method ? 'default' : 'outline'}
-                                        onClick={() => setType(method)}
-                                        className="flex-1"
-                                    >
-                                        {method.toUpperCase()}
-                                    </Button>
-                                ))}
-                            </div>
-
+                        <CardContent className="space-y-6 p-6">
                             <form onSubmit={handleVerify} className="space-y-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor={type}>Enter {type.toUpperCase()} Number</Label>
+                                    <Label htmlFor="verification-type">Verification Type</Label>
+                                    <Select
+                                        value={type}
+                                        onValueChange={(value) =>
+                                            setType(value as VerificationType)
+                                        }
+                                    >
+                                        <SelectTrigger
+                                            id="verification-type"
+                                            className="w-full h-14"
+                                        >
+                                            <SelectValue placeholder="Select verification type" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="bvn">BVN</SelectItem>
+                                            <SelectItem value="nin">NIN</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor={type}>{type.toUpperCase()} Number</Label>
                                     <Input
                                         id={type}
                                         name={type}
+                                        className="h-14"
                                         placeholder={`Enter your ${type.toUpperCase()}`}
                                         required
                                     />
@@ -86,11 +104,13 @@ export default function VerifyPage() {
                         </CardContent>
                     </Card>
 
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Verification Result</CardTitle>
+                    <Card className="bg-muted/30 shadow-none">
+                        <CardHeader className="p-0">
+                            <CardTitle className="text-base p-6 border-b">
+                                Verification Result
+                            </CardTitle>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="p-6">
                             {result ? (
                                 <dl className="space-y-4">
                                     {Object.entries(result).map(([key, value]) => (

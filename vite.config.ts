@@ -24,4 +24,8 @@ export default defineConfig({
             '@/': `${getDirname(import.meta.url)}/inertia/`,
         },
     },
+
+    server: {
+        allowedHosts: ['admin.idm.test', 'idm.test'],
+    },
 })
