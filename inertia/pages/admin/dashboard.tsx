@@ -63,15 +63,6 @@ export default function Dashboard({ stats }: DashboardProps) {
                 </div>
 
                 <VerificationTrendChart />
-
-                <Card className="bg-muted/30 shadow-none p-0">
-                    <CardHeader className="p-6 mb-6 border-b">
-                        <CardTitle className="text-base">Growth Overview</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="h-80">{/* <BarChart data={chartData} /> */}</div>
-                    </CardContent>
-                </Card>
             </div>
         </AdminLayout>
     )
