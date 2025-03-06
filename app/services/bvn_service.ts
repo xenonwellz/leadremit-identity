@@ -1,3 +1,4 @@
+import env from '#start/env'
 import axios from 'axios'
 
 interface BVNConfig {
