@@ -190,13 +190,18 @@ const TransactionTable = ({
 export default function TokensPage({ token_history, token_balance, pagination }: Props) {
     const [isPurchaseOpen, setIsPurchaseOpen] = useState(false)
     const [amount, setAmount] = useState('')
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, _setIsLoading] = useState(false)
 
     return (
         <AppLayout>
             <div className="space-y-6 flex-1 flex flex-col">
-                <header className="flex justify-between items-center">
-                    <h1 className="text-xl font-semibold">Tokens</h1>
+                <header className="flex justify-between items-start mb-6">
+                    <div className="flex flex-col gap-2">
+                        <h1 className="text-xl font-semibold">Tokens</h1>
+                        <p className="text-sm text-muted-foreground">
+                            Purchase tokens to verify identities
+                        </p>
+                    </div>
                     <Button onClick={() => setIsPurchaseOpen(true)}>Purchase Tokens</Button>
                 </header>
 

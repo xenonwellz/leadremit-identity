@@ -26,4 +26,9 @@ export default class AuthController {
         await ctx.auth.use('user').login(user)
         return ctx.response.redirect().toPath(appRoutes.app.home)
     }
+
+    async handleLogout(ctx: HttpContext) {
+        await ctx.auth.use('user').logout()
+        return ctx.response.redirect().toPath(appRoutes.auth.login)
+    }
 }

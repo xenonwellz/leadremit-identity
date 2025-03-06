@@ -76,8 +76,11 @@ export default function SettingsPage({ user }: Props) {
     return (
         <AppLayout>
             <div className="max-w-4xl space-y-6 flex-1 flex flex-col">
-                <header>
+                <header className="mb-6">
                     <h1 className="text-xl font-semibold">Settings</h1>
+                    <p className="text-sm text-muted-foreground mt-2">
+                        Manage your account settings
+                    </p>
                 </header>
 
                 <Card className="bg-muted/30 shadow-none">

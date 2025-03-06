@@ -225,18 +225,18 @@ export function VerificationTable({
         })
     }
 
-    const handleFilterSubmit = () => {
-        router.visit(window.location.pathname, {
-            data: {
-                ...filters,
-                page: 1,
-            },
-            preserveState: true,
-            only: ['verifications', 'pagination'],
-            preserveScroll: true,
-        })
-        setIsFilterOpen(false)
-    }
+    // const handleFilterSubmit = () => {
+    //     router.visit(window.location.pathname, {
+    //         data: {
+    //             ...filters,
+    //             page: 1,
+    //         },
+    //         preserveState: true,
+    //         only: ['verifications', 'pagination'],
+    //         preserveScroll: true,
+    //     })
+    //     setIsFilterOpen(false)
+    // }
 
     const clearFilters = () => {
         const emptyFilters = {

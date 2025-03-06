@@ -1,4 +1,5 @@
-import { HttpContext } from '@adonisjs/core/http'
+import type { HttpContext } from '@adonisjs/core/http'
+import DashboardService from '#services/dashboard_service'
 import { PaymentService } from '#services/payment_service'
 import crypto from 'node:crypto'
 import env from '#start/env'
@@ -11,6 +12,26 @@ const PurchaseValidator = vine.compile(
 )
 
 export default class TokensController {
+    async index({ inertia, auth, request }: HttpContext) {
+        const user = auth.user!
+        const page = request.input('page', 1)
+        const perPage = 10
+
+        const tokenHistory = await DashboardService.getTokenTransactions(user.id, page, perPage)
+        const tokenBalance = await DashboardService.getTokenBalance(user.id)
+
+        return inertia.render('tokens', {
+            token_history: tokenHistory.all(),
+            token_balance: tokenBalance,
+            pagination: {
+                currentPage: tokenHistory.currentPage,
+                totalPages: Math.ceil(tokenHistory.total / perPage),
+                perPage,
+                total: tokenHistory.total,
+            },
+        })
+    }
+
     async purchase({ request, auth, inertia }: HttpContext) {
         const payload = await request.validateUsing(PurchaseValidator)
         const payment = await PaymentService.initializePayment(auth.user!.id, payload.amount)

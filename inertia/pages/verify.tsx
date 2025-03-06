@@ -79,7 +79,7 @@ export default function VerifyPage({ types }: PageProps) {
                         )
                     }
                 },
-                onError: (errors) => {
+                onError: () => {
                     setError({
                         code: 'VALIDATION_ERROR',
                         message: 'Please check your input and try again',
@@ -95,8 +95,11 @@ export default function VerifyPage({ types }: PageProps) {
     return (
         <AppLayout>
             <div className="space-y-6 flex-1 flex flex-col">
-                <header>
+                <header className="mb-6">
                     <h1 className="text-xl font-semibold">Verify Identity</h1>
+                    <p className="text-sm text-muted-foreground mt-2">
+                        Validate identities by submitting the necessary details
+                    </p>
                 </header>
 
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 min-h-[60%]">

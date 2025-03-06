@@ -112,6 +112,19 @@ export default class VerificationService {
                         photo: data.Photo,
                     },
                 }
+            case 'vnin-verification':
+                return {
+                    id: data.DocumentNo,
+                    name: `${data.FirstName} ${data.MidleName} ${data.SurName}`.trim(),
+                    phone: data.TelephoneNo,
+                    verified: true,
+                    additionalData: {
+                        nin: data.Nin,
+                        gender: data.Gender,
+                        birthDate: data.BirthDate,
+                        photo: data.Photo,
+                    },
+                }
             case 'phone-verification':
                 const firstRecord = Array.isArray(data) && data.length > 0 ? data[0] : data
                 return {
@@ -124,6 +137,66 @@ export default class VerificationService {
                 }
             default:
                 return data
+        }
+    }
+
+    static getVerificationType(type: string) {
+        return Object.values(verificationConfig.types).find((t) => t.id === `${type}-verification`)
+    }
+
+    static getAvailableTypes() {
+        return Object.values(verificationConfig.types)
+    }
+
+    static async getFilteredHistory(
+        userId: string,
+        filters: {
+            idNumber?: string
+            idType?: string
+            fromDate?: string
+            toDate?: string
+            page: number
+            perPage: number
+        }
+    ) {
+        const { idNumber, idType, fromDate, toDate, page, perPage } = filters
+
+        const query = Verification.query().where('user_id', userId).orderBy('created_at', 'desc')
+
+        if (idNumber) {
+            query.where('id_number', 'like', `%${idNumber}%`)
+        }
+        if (idType) {
+            query.where('id_type', idType)
+        }
+
+        if (fromDate) {
+            query.where('created_at', '>=', fromDate)
+        }
+        if (toDate) {
+            query.where('created_at', '<=', toDate)
+        }
+
+        return query.paginate(page, perPage)
+    }
+
+    static handleVerificationError(error: any) {
+        if (error.message.includes('Insufficient tokens')) {
+            return {
+                success: false,
+                error: {
+                    code: 'INSUFFICIENT_TOKENS',
+                    message: error.message,
+                },
+            }
+        }
+
+        return {
+            success: false,
+            error: {
+                code: 'INTERNAL_ERROR',
+                message: 'An unexpected error occurred during verification',
+            },
         }
     }
 }

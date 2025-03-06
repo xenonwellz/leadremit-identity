@@ -3,6 +3,7 @@ import User from '#models/user'
 import TokenTransactions from '#models/token_transaction'
 import { DateTime } from 'luxon'
 import Verification from '#models/verification'
+import db from '@adonisjs/lucid/services/db'
 
 export default class DashboardService {
     static async getTokenTransactions(userId: string, page: number, perPage: number) {
@@ -76,24 +77,24 @@ export default class DashboardService {
         const monthAgo = now.minus({ months: 1 })
 
         const currentMonthStats = await Verification.query()
+            .select(
+                db.raw('COUNT(*) as total'),
+                db.raw('COUNT(CASE WHEN status = ? THEN 1 END) as successful', ['success']),
+                db.raw('COUNT(CASE WHEN status = ? THEN 1 END) as failed', ['failed'])
+            )
             .where('user_id', userId)
             .where('created_at', '>=', monthAgo.toSQL())
-            .count('* as total')
-            .count('* as successful')
-            .where('status', 'success')
-            .count('* as failed')
-            .where('status', 'failed')
             .first()
 
         const previousMonthStats = await Verification.query()
+            .select(
+                db.raw('COUNT(*) as total'),
+                db.raw('COUNT(CASE WHEN status = ? THEN 1 END) as successful', ['success']),
+                db.raw('COUNT(CASE WHEN status = ? THEN 1 END) as failed', ['failed'])
+            )
             .where('user_id', userId)
             .where('created_at', '<', monthAgo.toSQL())
             .where('created_at', '>=', monthAgo.minus({ months: 1 }).toSQL())
-            .count('* as total')
-            .count('* as successful')
-            .where('status', 'success')
-            .count('* as failed')
-            .where('status', 'failed')
             .first()
 
         return {
