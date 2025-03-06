@@ -26,4 +26,5 @@ export default await Env.create(new URL('../', import.meta.url), {
     DB_DATABASE: Env.schema.string(),
 
     DOMAIN: Env.schema.string(),
+    LEADREMIT_API_KEY: Env.schema.string(),
 })

@@ -76,20 +76,27 @@ export class PaymentService {
         }
     }
 
-    static async verifyPayment(reference: string) {
-        const response = await this.makeRequest(`/paymentlink/${reference}`, 'GET')
+    static async verifyPayment(payload: any) {
+        // Extract reference from webhook payload or direct payload
+        const reference = payload.data?.metadata?.reference || payload.reference
+        const status = payload.data?.status
+
+        if (!reference || !status) {
+            throw new PaymentException('Payment reference or status not found')
+        }
 
         const transaction = await TokenTransaction.findByOrFail('transactionReference', reference)
 
-        if (response.data.status === 'active') {
-            transaction.status = 'completed'
+        if (status === 'successful') {
+            transaction.status = 'success'
             await transaction.save()
-            return true
         }
 
-        transaction.status = 'failed'
-        await transaction.save()
-        return false
+        if (status === 'failed') {
+            transaction.status = 'failed'
+            await transaction.save()
+        }
+        return true
     }
 
     static async initializePayment(userId: string, amount: number) {

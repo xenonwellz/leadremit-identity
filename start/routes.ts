@@ -18,6 +18,7 @@ router
         router.get('register', [AuthController, 'register'])
         router.post('login', [AuthController, 'handleLogin'])
         router.post('register', [AuthController, 'handleRegister'])
+        router.post('tokens/webhook', [TokensController, 'webhook'])
     })
     .use(middleware.guest())
 

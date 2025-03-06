@@ -26,6 +26,6 @@ export default defineConfig({
     },
 
     server: {
-        allowedHosts: ['admin.idm.test', 'idm.test'],
+        allowedHosts: ['admin.idm.test', 'idm.test', 'de27-105-113-61-231.ngrok-free.app'],
     },
 })

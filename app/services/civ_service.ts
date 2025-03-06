@@ -54,12 +54,12 @@ export default class CIVService {
         }
     }
 
-    static async verifyNIN(nin: string) {
-        return this.makeRequest('/verifyVNinIndirect', nin)
+    static async verifyVNIN(vnin: string) {
+        return this.makeRequest('/verifyVNinIndirect', vnin)
     }
 
-    static async verifyBVN(bvn: string) {
-        return this.makeRequest('/verifyDocumentNumber', bvn)
+    static async verifyNIN(nin: string) {
+        return this.makeRequest('/verifyDocumentNumber', nin)
     }
 
     static async verifyPhoneNumber(phone: string) {

@@ -46,7 +46,9 @@ export default class VerificationService {
         })
 
         // Deduct tokens
-        await DashboardService.deductTokens(userId, verificationTypeConfig.cost)
+        if (result.success) {
+            await DashboardService.deductTokens(userId, verificationTypeConfig.cost)
+        }
 
         return result
     }
@@ -57,8 +59,8 @@ export default class VerificationService {
             case 'nin-verification':
                 response = await CIVService.verifyNIN(idNumber)
                 break
-            case 'bvn-verification':
-                response = await CIVService.verifyBVN(idNumber)
+            case 'vnin-verification':
+                response = await CIVService.verifyVNIN(idNumber)
                 break
             case 'phone-verification':
                 response = await CIVService.verifyPhoneNumber(idNumber)

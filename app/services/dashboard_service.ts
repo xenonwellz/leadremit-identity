@@ -16,13 +16,13 @@ export default class DashboardService {
         const credits = await TokenTransactions.query()
             .where('user_id', userId)
             .where('transactionType', 'credit')
-            // .where('status', 'success')
+            .where('status', 'success')
             .sum('amount as total')
 
         const debits = await TokenTransactions.query()
             .where('user_id', userId)
             .where('transactionType', 'debit')
-            // .where('status', 'success')
+            .where('status', 'success')
             .sum('amount as total')
 
         const totalCredits = Number(credits[0].$extras.total || 0)

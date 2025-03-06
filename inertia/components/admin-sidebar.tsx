@@ -69,7 +69,9 @@ export function AdminSidebar() {
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {items.map((item) => {
-                                const isActive = url === item.url
+                                const isActive =
+                                    url.startsWith(item.url) &&
+                                    (item.url === '/' ? url === '/' : true)
                                 return (
                                     <SidebarMenuItem key={item.title}>
                                         <SidebarMenuButton

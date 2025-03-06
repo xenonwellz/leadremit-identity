@@ -1,9 +1,9 @@
 export default {
     types: {
-        'bvn-verification': {
-            id: 'bvn-verification',
-            name: 'BVN Verification',
-            description: 'Verify Bank Verification Number (BVN)',
+        'vnin-verification': {
+            id: 'vnin-verification',
+            name: 'VNIN Verification',
+            description: 'Verify Virtual National Identity Number (VNIN)',
             cost: 2,
         },
         'nin-verification': {
