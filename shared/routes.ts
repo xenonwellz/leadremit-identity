@@ -5,6 +5,7 @@ export const appRoutes = {
     },
     app: {
         home: '/',
+        verify: '/verify',
         logout: '/logout',
     },
 }

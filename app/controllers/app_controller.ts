@@ -1,87 +1,104 @@
 import { appRoutes } from '#shared/routes'
 import type { HttpContext } from '@adonisjs/core/http'
+import DashboardService from '#services/dashboard_service'
+import verificationConfig from '#config/verification'
 
 export default class AppController {
-    // Mock data
-    private mockStats = {
-        total_calls: 1250,
-        successful_calls: 1100,
-        failed_calls: 150,
-        token_balance: 5000,
-    }
+    async dashboard({ inertia, auth, request }: HttpContext) {
+        const user = auth.user!
+        const page = request.input('page', 1)
+        const perPage = 10
 
-    private mockVerificationHistory = [
-        {
-            id: 1,
-            type: 'BVN',
-            number: '12345678901',
-            status: 'success',
-            date: '2024-03-20',
-            response: { name: 'John Doe', dob: '1990-01-01' },
-        },
-        // ... more entries
-    ]
-
-    private mockTokenHistory = [
-        {
-            id: 1,
-            amount: 1000,
-            tokens: 1000,
-            status: 'completed',
-            date: '2024-03-19',
-            reference: 'TXN-123456',
-        },
-        // ... more entries
-    ]
-
-    async dashboard(ctx: HttpContext) {
-        return ctx.inertia.render('dashboard', {
-            stats: this.mockStats,
-            recent_verifications: this.mockVerificationHistory.slice(0, 5),
+        // Get filtered verifications
+        const verifications = await DashboardService.getFilteredVerifications(user.id, {
+            idNumber: request.input('idNumber'),
+            idType: request.input('idType'),
+            fromDate: request.input('fromDate'),
+            toDate: request.input('toDate'),
+            page,
+            perPage,
         })
-    }
 
-    async verify(ctx: HttpContext) {
-        return ctx.inertia.render('verify')
-    }
+        // Get token history with pagination and balance
+        const tokenHistory = await DashboardService.getTokenTransactions(user.id, page, perPage)
+        const tokenBalance = await DashboardService.getTokenBalance(user.id)
+        const tokenBalanceChange = await DashboardService.getTokenBalanceChange(user.id)
 
-    async verifyBvn({ request, response }: HttpContext) {
-        const bvn = request.input('bvn')
-        console.log(bvn)
-        // Mock verification response
-        return response.json({
-            success: true,
-            data: {
-                name: 'John Doe',
-                dob: '1990-01-01',
-                phone: '08012345678',
+        // Get stats and chart data
+        const stats = await DashboardService.getVerificationStats(
+            user.id,
+            tokenBalance,
+            tokenBalanceChange
+        )
+        const chartData = await DashboardService.getVerificationChartData(user.id)
+
+        return inertia.render('dashboard', {
+            stats,
+            verifications: verifications.all(),
+            tokenHistory: tokenHistory.all(),
+            chartData,
+            verificationPagination: {
+                currentPage: verifications.currentPage,
+                totalPages: Math.ceil(verifications.total / perPage),
+                perPage,
+                total: verifications.total,
+            },
+            tokenPagination: {
+                currentPage: tokenHistory.currentPage,
+                totalPages: Math.ceil(tokenHistory.total / perPage),
+                perPage,
+                total: tokenHistory.total,
             },
         })
     }
 
-    async verifyNin({ request, response }: HttpContext) {
-        const nin = request.input('nin')
-        console.log(nin)
-        // Mock verification response
-        return response.json({
-            success: true,
-            data: {
-                name: 'Jane Doe',
-                dob: '1992-05-15',
-                phone: '08087654321',
-            },
-        })
+    async verify({ inertia }: HttpContext) {
+        const types = Object.values(verificationConfig.types)
+        return inertia.render('verify', { types })
     }
 
     async tokens(ctx: HttpContext) {
+        const user = ctx.auth.user!
+        const page = ctx.request.input('page', 1)
+        const perPage = 10
+
+        const tokenHistory = await DashboardService.getTokenTransactions(user.id, page, perPage)
+        const tokenBalance = await DashboardService.getTokenBalance(user.id)
+
         return ctx.inertia.render('tokens', {
-            token_history: this.mockTokenHistory,
+            token_history: tokenHistory.all(),
+            token_balance: tokenBalance,
+            pagination: {
+                currentPage: tokenHistory.currentPage,
+                totalPages: Math.ceil(tokenHistory.total / perPage),
+                perPage,
+                total: tokenHistory.total,
+            },
         })
     }
 
-    async history(ctx: HttpContext) {
-        return ctx.inertia.render('history', {
-            verification_history: this.mockVerificationHistory,
+    async history({ inertia, auth, request }: HttpContext) {
+        const user = auth.user!
+        const page = request.input('page', 1)
+        const perPage = 10
+
+        const verifications = await DashboardService.getFilteredVerifications(user.id, {
+            idNumber: request.input('idNumber'),
+            idType: request.input('idType'),
+            fromDate: request.input('fromDate'),
+            toDate: request.input('toDate'),
+            page,
+            perPage,
+        })
+
+        return inertia.render('history', {
+            verifications: verifications.all(),
+            pagination: {
+                currentPage: verifications.currentPage,
+                totalPages: Math.ceil(verifications.total / perPage),
+                perPage,
+                total: verifications.total,
+            },
         })
     }
 

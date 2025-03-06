@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import {
     Table,
     TableBody,
@@ -9,133 +8,316 @@ import {
 } from '@/components/ui/table'
 import { Pagination } from '@/components/ui/pagination'
 import { Badge } from '@/components/ui/badge'
+import { Button } from './ui/button'
+import { Filter, X, ChevronDown, ChevronUp } from 'lucide-react'
+import { Input } from './ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
+import { router } from '@inertiajs/react'
+import { format } from 'date-fns'
+import { VerificationFilters, VerificationTableProps } from '@/interfaces/verification'
+import { useState } from 'react'
+import Verification from '#models/verification'
+interface FilterContentProps {
+    setFilters: (filters: any) => void
+    filters: VerificationFilters
+}
 
-const ITEMS_PER_PAGE = 5
+interface VerificationTableHeaderProps {
+    filters: VerificationFilters
+    clearFilters: () => void
+    isFilterOpen: boolean
+    setIsFilterOpen: (isOpen: boolean) => void
+}
 
-const items = [
-    {
-        sn: 1,
-        id: '12345678',
-        name: 'John martins',
-        idType: 'bvn',
-        time: '12:35 pm',
-        date: '30 august 2024',
-        status: 'successful',
-        credits: '45 credits',
-    },
-    {
-        sn: 1,
-        id: '12345678',
-        name: 'John martins',
-        idType: 'bvn',
-        time: '12:35 pm',
-        date: '30 august 2024',
-        status: 'Failed',
-        credits: '45 credits',
-    },
-    {
-        sn: 1,
-        id: '12345678',
-        name: 'John martins',
-        idType: 'bvn',
-        time: '12:35 pm',
-        date: '30 august 2024',
-        status: 'successful',
-        credits: '45 credits',
-    },
-    {
-        sn: 1,
-        id: '12345678',
-        name: 'John martins',
-        idType: 'bvn',
-        time: '12:35 pm',
-        date: '30 august 2024',
-        status: 'Failed',
-        credits: '45 credits',
-    },
-    {
-        sn: 1,
-        id: '12345678',
-        name: 'John martins',
-        idType: 'bvn',
-        time: '12:35 pm',
-        date: '30 august 2024',
-        status: 'successful',
-        credits: '45 credits',
-    },
-]
+interface VerificationDetailsProps {
+    responseData: Record<string, any>
+}
 
-export function VerificationTable() {
-    const [currentPage, setCurrentPage] = useState(1)
+interface DetailRowProps {
+    label: string
+    value: string | number | boolean | null
+}
 
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
-    const endIndex = startIndex + ITEMS_PER_PAGE
-    const currentItems = [...items, ...items, ...items].slice(startIndex, endIndex)
-    const totalPages = Math.ceil([...items, ...items, ...items].length / ITEMS_PER_PAGE)
+interface VerificationRowProps {
+    verification: Verification
+    isExpanded: boolean
+    onToggle: (id: string) => void
+}
+
+export const FilterContent = ({ setFilters, filters }: FilterContentProps) => (
+    <div className="grid gap-4">
+        <div>
+            <Input
+                id="idNumber"
+                placeholder="Search by ID number"
+                value={filters.idNumber}
+                onChange={(e) =>
+                    setFilters((prev: any) => ({
+                        ...prev,
+                        idNumber: e.target.value,
+                    }))
+                }
+            />
+        </div>
+
+        <div>
+            <Select
+                value={filters.idType}
+                onValueChange={(value) => setFilters((prev: any) => ({ ...prev, idType: value }))}
+            >
+                <SelectTrigger id="idType">
+                    <SelectValue placeholder="Select ID type" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="national_id">National ID</SelectItem>
+                    <SelectItem value="passport">Passport</SelectItem>
+                    <SelectItem value="driving">Driving License</SelectItem>
+                </SelectContent>
+            </Select>
+        </div>
+
+        <div>
+            <Input
+                id="fromDate"
+                type="date"
+                value={filters.fromDate}
+                onChange={(e) =>
+                    setFilters((prev: any) => ({
+                        ...prev,
+                        fromDate: e.target.value,
+                    }))
+                }
+            />
+        </div>
+
+        <div>
+            <Input
+                id="toDate"
+                type="date"
+                value={filters.toDate}
+                onChange={(e) =>
+                    setFilters((prev: any) => ({
+                        ...prev,
+                        toDate: e.target.value,
+                    }))
+                }
+            />
+        </div>
+    </div>
+)
+
+// New components to extract
+const VerificationTableHeader = ({
+    filters,
+    clearFilters,
+    isFilterOpen,
+    setIsFilterOpen,
+}: VerificationTableHeaderProps) => (
+    <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold">Recent Verifications</h2>
+        <div className="flex items-center gap-2">
+            {(filters.idNumber || filters.idType || filters.fromDate || filters.toDate) && (
+                <Button variant="ghost" size="sm" onClick={clearFilters}>
+                    <X className="h-4 w-4 mr-1" /> Clear filters
+                </Button>
+            )}
+            <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                className="lg:hidden"
+            >
+                <Filter className="h-4 w-4 mr-1" /> Filter
+            </Button>
+        </div>
+    </div>
+)
+
+const VerificationDetails = ({ responseData }: VerificationDetailsProps) => (
+    <div className="mt-2 space-y-3 bg-muted/50 rounded-lg text-xs border p-3">
+        {Object.entries(responseData).map(([key, value]) => {
+            if (typeof value === 'object' && value !== null) {
+                return (
+                    <div
+                        key={key}
+                        className="space-y-2 border-b border-border/50 last:border-0 pb-3 last:pb-0 p-2 border"
+                    >
+                        <div className="font-semibold text-primary capitalize">
+                            {key.replace(/_/g, ' ')}
+                        </div>
+                        <div className="ml-4 grid gap-1.5 border p-2">
+                            {Object.entries(value).map(([subKey, subValue]) => (
+                                <DetailRow
+                                    key={`${key}-${subKey}`}
+                                    label={subKey}
+                                    value={subValue as string | number | boolean | null}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                )
+            }
+            return (
+                <div key={key} className="border-b border-border/50 last:border-0 pb-3 last:pb-0">
+                    <DetailRow label={key} value={value} />
+                </div>
+            )
+        })}
+    </div>
+)
+
+const DetailRow = ({ label, value }: DetailRowProps) => (
+    <div className="flex justify-between">
+        <span className="text-muted-foreground capitalize">{label.replace(/_/g, ' ')}</span>
+        <span className="font-medium">
+            {typeof value === 'boolean' ? (value ? '✓' : '✗') : String(value)}
+        </span>
+    </div>
+)
+
+const VerificationRow = ({ verification, isExpanded, onToggle }: VerificationRowProps) => (
+    <TableRow>
+        <TableCell>{verification.id}</TableCell>
+        <TableCell className="capitalize">
+            {verification.verificationType.split('-').join(' ').toUpperCase()}
+        </TableCell>
+        <TableCell>
+            <Badge variant={verification.status === 'success' ? 'success' : 'error'}>
+                {verification.status}
+            </Badge>
+        </TableCell>
+        <TableCell>{format(new Date(verification.createdAt.toString()), 'MMM d, yyyy')}</TableCell>
+        <TableCell>{format(new Date(verification.createdAt.toString()), 'h:mm a')}</TableCell>
+        <TableCell className="w-[400px]">
+            <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onToggle(verification.id)}
+                className="flex items-center gap-1"
+            >
+                View Details
+                {isExpanded ? (
+                    <ChevronUp className="h-4 w-4" />
+                ) : (
+                    <ChevronDown className="h-4 w-4" />
+                )}
+            </Button>
+            {isExpanded && <VerificationDetails responseData={verification.responseData} />}
+        </TableCell>
+    </TableRow>
+)
+
+export function VerificationTable({
+    verifications,
+    filters,
+    setFilters,
+    isFilterOpen,
+    setIsFilterOpen,
+    pagination,
+}: VerificationTableProps) {
+    const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({})
+
+    const handlePageChange = (page: number) => {
+        router.visit(window.location.pathname, {
+            data: { ...filters, page },
+            preserveState: true,
+            preserveScroll: true,
+            only: ['verifications', 'verificationPagination'],
+        })
+    }
+
+    const handleFilterSubmit = () => {
+        router.visit(window.location.pathname, {
+            data: {
+                ...filters,
+                page: 1,
+            },
+            preserveState: true,
+            only: ['verifications', 'pagination'],
+            preserveScroll: true,
+        })
+        setIsFilterOpen(false)
+    }
+
+    const clearFilters = () => {
+        const emptyFilters = {
+            idNumber: '',
+            idType: '',
+            fromDate: '',
+            toDate: '',
+        }
+        setFilters(emptyFilters)
+        router.visit(window.location.pathname, {
+            data: {
+                ...emptyFilters,
+                page: 1,
+            },
+            preserveState: true,
+            only: ['verifications', 'pagination'],
+            preserveScroll: true,
+        })
+    }
+
+    const toggleRow = (id: string) => {
+        setExpandedRows((prev) => ({
+            ...prev,
+            [id]: !prev[id],
+        }))
+    }
 
     return (
-        <div className="flex flex-col h-full bg-muted/30 rounded-lg border">
-            {items.length === 0 ? (
-                <div className="flex flex-1 items-center justify-center p-6">
-                    <p>No verification records available.</p>
-                </div>
-            ) : (
-                <>
-                    <h2 className="text-base font-medium mb-4 p-4 py-6 border-b">
-                        Recent Verifications
-                    </h2>
-                    <div className="overflow-auto flex-1 p-4">
-                        <Table className="border-separate border-spacing-y-3 w-full min-w-[800px]">
-                            <TableHeader className="sticky top-0 z-10 bg-background/90 backdrop-blur-sm">
-                                <TableRow className="hover:bg-transparent">
-                                    <TableHead>S/N</TableHead>
-                                    <TableHead>ID NO.</TableHead>
-                                    <TableHead>NAME</TableHead>
-                                    <TableHead>ID TYPE</TableHead>
-                                    <TableHead>TIME</TableHead>
-                                    <TableHead>DATE</TableHead>
-                                    <TableHead>STATUS</TableHead>
-                                    <TableHead className="text-right">CREDITS</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {currentItems.map((item, index) => (
-                                    <TableRow
-                                        key={startIndex + index}
-                                        className="first:[&_td]:rounded-l-lg last:[&_td]:rounded-r-lg [&_td]:border-b-transparent [&_td]:bg-muted/50 h-16 pb-4 [&_td]:p-4 [&_td]:hover:bg-muted/60"
-                                    >
-                                        <TableCell>{startIndex + index + 1}</TableCell>
-                                        <TableCell>{item.id}</TableCell>
-                                        <TableCell>{item.name}</TableCell>
-                                        <TableCell>{item.idType}</TableCell>
-                                        <TableCell>{item.time}</TableCell>
-                                        <TableCell>{item.date}</TableCell>
-                                        <TableCell>
-                                            <Badge
-                                                variant={
-                                                    item.status.toLowerCase() === 'successful'
-                                                        ? 'success'
-                                                        : 'error'
-                                                }
-                                                className="capitalize"
-                                            >
-                                                {item.status}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="text-right">{item.credits}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </div>
-                    <div className="p-4 py-6 border-t mt-auto">
-                        <Pagination
-                            currentPage={currentPage}
-                            totalPages={totalPages}
-                            onPageChange={setCurrentPage}
-                        />
-                    </div>
-                </>
+        <div className="space-y-4">
+            <VerificationTableHeader
+                filters={filters}
+                clearFilters={clearFilters}
+                isFilterOpen={isFilterOpen}
+                setIsFilterOpen={setIsFilterOpen}
+            />
+
+            {isFilterOpen && <FilterContent setFilters={setFilters} filters={filters} />}
+
+            <div className="border rounded-lg overflow-hidden">
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>ID</TableHead>
+                            <TableHead>Type</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Verification Date</TableHead>
+                            <TableHead>Verification Time</TableHead>
+                            <TableHead>Details</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {verifications.length === 0 ? (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={5}
+                                    className="text-center py-8 text-muted-foreground"
+                                >
+                                    No verification records found
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                            verifications.map((verification) => (
+                                <VerificationRow
+                                    key={verification.id}
+                                    verification={verification}
+                                    isExpanded={expandedRows[verification.id]}
+                                    onToggle={toggleRow}
+                                />
+                            ))
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
+
+            {pagination.totalPages > 1 && (
+                <Pagination
+                    currentPage={pagination.currentPage}
+                    totalPages={pagination.totalPages}
+                    onPageChange={handlePageChange}
+                />
             )}
         </div>
     )

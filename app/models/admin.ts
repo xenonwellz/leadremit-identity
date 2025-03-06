@@ -14,7 +14,7 @@ export default class Admin extends compose(BaseModel, AuthFinder) {
     static selfAssignPrimaryKey = true
 
     @column({ isPrimary: true })
-    declare id: number
+    declare id: string
 
     @column()
     declare email: string

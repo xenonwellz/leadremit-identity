@@ -20,10 +20,10 @@ createInertiaApp({
 
     setup({ el, App, props }) {
         const app = (
-            <>
+            <main>
                 <App {...props} />
                 <Toaster richColors />
-            </>
+            </main>
         )
         hydrateRoot(el, app)
     },

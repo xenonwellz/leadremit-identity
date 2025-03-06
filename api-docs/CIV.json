@@ -1,0 +1,1035 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "version": "v1",
+    "title": "Combined Identity Validation (CIV)",
+    "description": "Introduction\n==\n\nThe NIBSS Combined Identity Validation (CIV) Web service and Portal allows NIBSS to offer a host of identity validation and verification services to customers with varying levels of access. In this way, the Combined Identity Validation service allows NIBSS to consolidate a number of Identity Validation offerings via a single web service and portal. \n\nNIBSS has a number of validation services that it provides to financial institutions. These include Phone number validation as well as other services sourced from partners such as VNIN and TIN validation. This API aims to make these various services available via a single web service as well. \n\nAPI Methods\n==\n\nThe API interface is implemented as a **RESTful web service**. This exposes methods namely Verify Individual TIN, Verify Corporate TIN, Verify VNIN & Phone Number Validation. Other validation methods available on the API includes Verify Document Number. \n\n\nOnboarding\n==\n \nTo get started with the Combined Identity Validation API, you need to be profiled on the NIBSS Developer portal.\n \nYou have to fill in some basic information for identification purposes. This information is collected in the [REQUEST CREDENTIALS FORM](https://forms.office.com/pages/responsepage.aspx?id=G3ucJwa6e0KmgcilSS0pPcemIqHoBy9KvH3iwjGMrclUN0RRUldEME5GU0U1VFhYN1YxSTZPMVpJOC4u). The form requires you to fill in your profiled email address and state the reason(s) you should be profiled on the service (whether it is for Test or production).\n \nOnce you submit the request, You will receive an email containing these credentials: API KEY, CLIENT ID and [CLIENT SECRET](https://devportal.nibss-plc.com.ng/default/documentation/azure-secret-gen).\n \nIf you do not receive this email within 8 hours of filling the form during the working days, please contact the [NIBSS CERTIFICATION SUPPORT REPRESENTATIVE](mailto:certification@nibss-plc.com.ng) for assistance with the delay of your request.\n \nThe API KEY, CLIENT ID and CLIENT SECRET are the credentials that would be used to identify you as a client on the application. Below explains what each credential means:\n \n**API Key**\n \nThis is a unique code that is used to authenticate and identify you as a client accessing the API. It is assigned to you and sent via mail after you have submitted a credential request. This key should be passed within the request header when generating a TOKEN for [AUTHENTICATION](https://devportal.nibss-plc.com.ng/default/documentation/accesstoken) via the v2 reset endpoint.\n \n**Client ID**\n \nThis is a unique identifier assigned to you as a client/customer for every request made on the application. This is mainly used when you want to generate a TOKEN for another request call on the application. Check [AUTHENTICATION](https://devportal.nibss-plc.com.ng/default/documentation/accesstoken) to know how to use this credential to obtain a token.\n \n**Client SECRET**\n \nThis is a unique set of numbers/text that is denoted as a password for every request sent. This is also used for generating an [AUTHENTICATION](https://devportal.nibss-plc.com.ng/default/documentation/accesstoken) token when you want to request the NIBSS application.\n \nCheck [AUTHENTICATION](https://devportal.nibss-plc.com.ng/default/documentation/accesstoken) to see how you can generate an access token to enable you to make successful calls to the Combined Identity Validation API.\n\n\n\nFields Descriptions\n==\n\nThe validate API field are described as follows:\n\n| **S/N** | **Field Name** | **Description** | **Sample Value** | **Mandatory** | **Comments** | **Data Type** |\n| --- | --- | --- | --- | --- | --- | --- |\n| 1 | ValidationNumber. | The number to be verified. This can be the NIN, Document No or Passport No. | 90864292912 | Y |    | string |\n| 2 | Signature | Base64 string of the calling client's username. (The Client's Username will be provided by NIBSS) | MDAwMDUw | Y |   | string |\n\n\n\nSecurity\n==\n\nThis is like our API gateway security- OAuth2.0. The client is to be issued a ClientID and Client Secret. The client is meant to call the reset endpoint and subsequently use the token generated as a bearer in subsequent API calls. \n\n\nResponse Codes\n==\n\n| **S/N** | **Response Code** | **Message** | **Reasons** | \n| --- | --- | --- | --- |\n| 1 | 04 | INVALID CLIENT USERNAME | Invalid Username/Client Service Username |\n| 2 | 01 | INACTIVE CLIENT PROFILE | The detail of the error will be returned in the message |\n| 3 | 00 | SUCCESS | Success |\n| 4 | 99 | FAILED | Request Failed |\n| 5 | 02 | HEADER ERROR: -INVALID TIMESTAMP | Invalid timestamp |\n| 6 | 03 | HEADER ERROR: -INVALID SIGNATURE_METH METHOD | Invalid signature method |\n| 7 | 05 | HEADER ERROR: -INVALID SIGNATURE HEADER | Invalid signature |\n| 8 | 06 | HEADER ERROR: -INVALID AUTHORIZATION HEADER | Invalid authorization |\n| 9 | 07 | HEADER ERROR: -INVALID CLIENT | Invalid client |\n| 10 | 08 | REQUEST ERROR: -UNABLE TO DECRYPT REQUEST | Service can’t decrypt request |\n| 11 | 09 | EMPTY REQUEST HEADER | Empty request header |\n| 12 | 10 | INVALID CLIENT | Invalid client profile |\n| 13 | 11 | CLIENT NOT PERMITTED TO CALL THIS API | Client not given permission to call the method |\n| 14 | 98 |INVALID NIN | Invalid NIN |\n| 15 | 97 | NULL RESPONSE | Null response from third party |\n| 16 | 96 | CONNECTIVITY ISSUES | Network connection with third party |\n| 17 | 95 | THIRD PARTY RESPONSE | Response message from third party |\n| 18 | 33 | RESET ERROR: -SECURITY PROFILE EXPIRED. RESET YOUR PROFILE | Expired Profile Credentials. |\n\n\nHTTP Response Codes\n==\n\n| **S/N** | **Code** | **Description** |\n| --- | ---| --- |\n| 1 | 200 | Request successfully executed. |\n| 2 | 400 | Invalid Request and the change were not successful |\n| 3 | 417 |Expectation Failed. This means that one of the requirements to process the request is not available or invalid. |\n\nInstitution Codes\n==\n| **S/N** | **Code** | **Name** |\n| --- | ---| --- |\n| 1 | 000023 | CITIBANK |\n| 2 | 000076 | SKYE BANK |\n| 3 | 000070 | FIDELITY BANK |\n| 4 | 000044 | ACCESS BANK |\n| 5 | 000030 | HERITAGE BANK |\n| 6 | 000063 | DIAMOND BANK |\n| 7 | 000058 | GTBANK |\n| 8 | 000215 | UNITY BANK |\n| 9 | 000301 | JAIZ BANK |\n| 10 | 000011 | FIRST BANK |\n| 11 | 000033 | UBA |\n| 12 | 000032 | UNION BANK |\n| 13 | 000221 | STANBIC IBTC |\n| 14 | 000232 | STERLING BANK |\n| 15 | 000068 | STANDARD CHARTERED |\n| 16 | 000050 | ECOBANK |\n| 17 | 000214 | FCMB |\n| 18 | 000082 | KEYSTONE BANK |\n| 19 | 000232 | STERLING Bank |\n| 20 | 000501 | FSDH |\n| 21 | 000057 | ZENITH BANK |\n| 22 | 000035 | WEMA BANK |\n| 23 | 000101 | PROVIDUS BANK |\n| 24 | 000001 | CBN |\n| 25 | 000100 | SUNTRUST BANK |\n| 26 | 000502 | RAND |\n| 27 | 000560 | FBN Merchant |",
+    "termsOfService": "https://www.nibss-plc.com.ng/services/terms-of-use/",
+    "contact": {
+      "name": "NIBSS Technical Implementation Support",
+      "url": "https://contactcentre.nibss-plc.com.ng/support/home",
+      "email": "technicalimplementation@nibss-plc.com.ng"
+    },
+    "license": {
+      "url": "https://www.apache.org/licenses/LICENSE-2.0",
+      "name": "Apache 2.0"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://apitest.nibss-plc.com.ng/identity/v2",
+      "description": "Test"
+    }
+  ],
+  "paths": {
+    "/verifyIndividualTin": {
+      "post": {
+        "tags": [
+          "Default"
+        ],
+        "summary": "Verify Individual TIN",
+        "description": "This method is called to verify customers' Tax Identification Number (Individual).",
+        "operationId": "verifyIndividualTin",
+        "parameters": [
+          {
+            "name": "Token",
+            "in": "header",
+            "description": "The Access Token is  generated using the /reset endpoint provided by NIBSS and it’s used in the header as bearer authentication for subsequent calls to other endpoints under the API. ",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IndividualTinResponse"
+                }
+              }
+            }
+          },
+          "417": {
+            "description": "Invalid Failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvalidRequest"
+                }
+              }
+            }
+          }
+        },
+        "servers": [
+          {
+            "url": "https://apitest.nibss-plc.com.ng/identity/v2",
+            "description": "Test"
+          }
+        ],
+        "x-extension-1": true
+      }
+    },
+    "/verifyCorporateTin": {
+      "post": {
+        "tags": [
+          "Default"
+        ],
+        "summary": "Verify Corporate TIN",
+        "description": "This method is called to verify customers' Tax Identification Number (Corporate).",
+        "operationId": "verifyCorporateTin",
+        "parameters": [
+          {
+            "name": "Token",
+            "in": "header",
+            "description": "The Access Token is  generated using the /reset endpoint provided by NIBSS and it’s used in the header as bearer authentication for subsequent calls to other endpoints under the API. ",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiRequest"
+              },
+              "examples": {
+                "Example 1": {
+                  "value": {
+                    "validationNumber": "11000000000",
+                    "signature": "MDAwMDUw"
+                  }
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CorporateTinResponse"
+                }
+              }
+            }
+          }
+        },
+        "servers": [
+          {
+            "url": "https://apitest.nibss-plc.com.ng/identity/v2",
+            "description": "Test"
+          }
+        ]
+      }
+    },
+    "/searchMobile": {
+      "post": {
+        "tags": [
+          "Default"
+        ],
+        "summary": "Phone Number Validation",
+        "description": "Phone Number Validation is used to fetch details of a phone number from ICAD and BVN",
+        "operationId": "searchMobile",
+        "parameters": [
+          {
+            "name": "Token",
+            "in": "header",
+            "description": "The Access Token is  generated using the /reset endpoint provided by NIBSS and it’s used in the header as bearer authentication for subsequent calls to other endpoints under the API. ",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ValidationNumber": {
+                    "type": "string",
+                    "description": "The number to be verified. This can be the NIN, Document No or Passport No.",
+                    "example": "08066340685"
+                  },
+                  "Signature": {
+                    "type": "string",
+                    "description": "Base64 string of the calling client's username. ",
+                    "example": "MDAwMDUw"
+                  }
+                },
+                "required": [
+                  "ValidationNumber",
+                  "Signature"
+                ],
+                "x-examples": {
+                  "Example 1": {
+                    "ValidationNumber": "08066340685",
+                    "Signature": "MDAwMDUw"
+                  }
+                }
+              },
+              "examples": {
+                "Example 1": {
+                  "value": {
+                    "ValidationNumber": "08066340685",
+                    "Signature": "MDAwMDUw"
+                  }
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "00"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "SUCCESS"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "firstName": {
+                            "type": "string",
+                            "example": "FRANKLIN"
+                          },
+                          "middleName": {
+                            "type": "string",
+                            "example": "COLLINS"
+                          },
+                          "lastName": {
+                            "type": "string",
+                            "example": "UDEH"
+                          },
+                          "dateOfBirth": {
+                            "type": "string",
+                            "example": "09 Nov 1987"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "Example 1": {
+                      "status": "00",
+                      "message": "SUCCESS",
+                      "data": [
+                        {
+                          "firstName": "UDEH",
+                          "middleName": "",
+                          "lastName": "FRANKLIN",
+                          "dateOfBirth": "24 Oct 2016"
+                        },
+                        {
+                          "firstName": "FRANKLIN",
+                          "middleName": "COLLINS",
+                          "lastName": "UDEH",
+                          "dateOfBirth": "09 Nov 1987"
+                        },
+                        {
+                          "firstName": "FRANKLIN COLLINS",
+                          "middleName": "",
+                          "lastName": "UDEH",
+                          "dateOfBirth": "05 Jun 1986"
+                        },
+                        {
+                          "firstName": "franklin",
+                          "middleName": "collins",
+                          "lastName": "udeh",
+                          "dateOfBirth": "09 Nov 1987"
+                        },
+                        {
+                          "firstName": "mooketsi",
+                          "middleName": "Oluwadamilare M",
+                          "lastName": "regoeng",
+                          "dateOfBirth": "12 May 2005"
+                        },
+                        {
+                          "firstName": "Franklin",
+                          "middleName": "B",
+                          "lastName": "Udeh",
+                          "dateOfBirth": "19 Oct 1952"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "status": "00",
+                      "message": "SUCCESS",
+                      "data": [
+                        {
+                          "firstName": "FRANKLIN",
+                          "middleName": "COLLINS",
+                          "lastName": "UDEH",
+                          "dateOfBirth": "09 Nov 1987"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "417": {
+            "description": "Expectation Failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvalidRequest"
+                }
+              }
+            }
+          },
+          "": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "servers": [
+          {
+            "url": "https://apitest.nibss-plc.com.ng/identity/v2",
+            "description": "Test"
+          }
+        ]
+      }
+    },
+    "/verifyVNinIndirect": {
+      "post": {
+        "tags": [
+          "Default"
+        ],
+        "summary": "Verify Virtual NIN (Indirect)",
+        "description": "The verifyVNin endpoint is used to retrieve virtual NIN information from NIMC. The customer uses the NIMC app to generate a virtual NIN for himself, then this service is used to retrieve the details of this virtual NIN. The NIN is tied to a client and individual.\n\nThis takes the virtual NIN as the Validation Number and a base64 string of the client’s username as signature. The client should focus on the decdata and the photograph information for this method. Kindly request for test VNIN from the [NIBSS CERTIFICATION SUPPORT REPRESENTATIVE](mailto:certification@nibss-plc.com.ng)  \n\nThe Virtual NIN - It consists of a set of 16 alphanumeric characters. The Virtual NIN itself (not the NIN record it represents) **expires 72 hours after being generated**.",
+        "operationId": "post-api-v2-Validation-verifyVNin",
+        "parameters": [
+          {
+            "name": "Token",
+            "in": "header",
+            "description": "The Access Token is  generated using the /reset endpoint provided by NIBSS and it’s used in the header as bearer authentication for subsequent calls to other endpoints under the API. ",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiRequestVNinIndirect"
+              },
+              "examples": {
+                "Example 1": {
+                  "value": {
+                    "validationNumber": "LP987883338458NR|1234567|064216ac-2ee6-11ed-b14d-265bf18a7a52",
+                    "signature": "MDAwMDAx"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyVNinIndirectResponse"
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "status": "00",
+                      "message": "SUCCESS",
+                      "data": {
+                        "data": "JHXw9hA/n+Ymtf/XtkoyBEekzYMDwvx7wLM9cWeT+xcaY9mmyYao7jjyBwhVzG9XM2bA2trEZpogQLt65nnfgu55iH3x/5cGZnMHF6kbWK2pgE4JBtdweMhDjL62fhSRzax3EPGLJ1hLNBo6IAlOvB0IRUM51WAFAhJmNf1W+bvm58G1JpoAPLpz2bOAkRp7ETguBLhD01ziWd/Ws8VT3c/pUpB8PKxJBVOfCd5VdheUpH/XzIf+GzawJZzD6oR1PeLlTemZrMdg+Pr3Pvd9Svuk775xaLIzZNueWDeapXg5mwfex2a/M9vuIJPml/UXM66CivwOsdYn93+oScuOvBvCY5/9il8K6MWwr9B+MbKxgQBVqvSDqTMA0tx/WuMSwypxWGHSH/n99HQoEZo0F8f+Y7uzP9vrY+1m/cr3+oXzQ57KfcTRHBe+pW65xJe3K3RsBczEToYWUpyKX4JCkwUXBbrKeIfBFk7cpYJSoS40uu/e9KnKdvYRr6NMYljp",
+                        "message": "string",
+                        "decData": {},
+                        "success": true,
+                        "photograph": "iVBORw0KGgoAAAANSUhEUgAAAbwAAAIyCAYAAACw4n/qAAAACXBIWXMAAAsTAAALEwEAmpwYAABINUlEQVR4Xu3dCXxdV3Xof13p3qt5ni3J8iDbkofYiZNAgjP1MTyavNIWWh4fhvYBr6XQxwMKJMADWvjDv5QyvTCVAoFAEygUwhQgCXHiOI5xEg+xLVuSB9mSbM2TNU/3rWPs4j"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VNinFailedResponse"
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "status": "78",
+                      "message": "INVALID VIRTUAL NIN",
+                      "data": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "servers": [
+          {
+            "url": "https://apitest.nibss-plc.com.ng/identity/v2",
+            "description": "Test"
+          }
+        ]
+      }
+    },
+    "/verifyDocumentNumber": {
+      "post": {
+        "tags": [
+          "Others"
+        ],
+        "summary": "verify Document Number",
+        "description": "This method is called to verify customers' NIMC’s Document number.\nCustom headers are required to call this method. See the security section for more details.",
+        "operationId": "verifyDocumentNumber",
+        "parameters": [
+          {
+            "name": "Token",
+            "in": "header",
+            "description": "The Access Token is  generated using the /reset endpoint provided by NIBSS and it’s used in the header as bearer authentication for subsequent calls to other endpoints under the API. ",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiRequest"
+              },
+              "examples": {
+                "Example 1": {
+                  "value": {
+                    "validationNumber": "11000000000",
+                    "signature": "MDAwMDUw"
+                  }
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RequestResponse"
+                    }
+                  ]
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "status": "00",
+                      "message": "SUCCESS",
+                      "DocumentNo": "11000000000",
+                      "FirstName": "YAHAYA",
+                      "SurName": "MUSA",
+                      "MidleName": "ISAH",
+                      "Nin": "52183237373",
+                      "TelephoneNo": "08124258110",
+                      "BirthDate": "17-03-1979",
+                      "Photo": "string",
+                      "Gender": "M",
+                      "MaidenName": "string",
+                      "BankName": "First Bank",
+                      "BranchName": "NULL",
+                      "TrackingNumber": "4741**14",
+                      "ResponseCode": "00",
+                      "ResponseDescription": "SUCCESS"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "417": {
+            "description": "Expectation Failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvalidRequest"
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "responseCode": "99",
+                      "responseMessage": "Request Failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "servers": [
+          {
+            "url": "https://apitest.nibss-plc.com.ng/identity/v2",
+            "description": "Test"
+          }
+        ],
+        "x-extension-1": true
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Default",
+      "description": "Refers to the default validation methods available on the API"
+    },
+    {
+      "name": "Others",
+      "description": "Refers to other validation methods available on the API"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "Token": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "refreshUrl": "",
+            "scopes": {},
+            "tokenUrl": "https://apitest.nibss-plc.com.ng/reset"
+          }
+        }
+      }
+    },
+    "schemas": {
+      "ApiRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "validationNumber": {
+            "type": "string",
+            "nullable": true,
+            "description": " The number to be verified. This can be the NIN, Document No or Passport No.",
+            "example": "11000000000"
+          },
+          "signature": {
+            "type": "string",
+            "nullable": true,
+            "description": "Base64 string of the calling client's username. ",
+            "example": "MDAwMDUw"
+          }
+        },
+        "required": [
+          "validationNumber",
+          "signature"
+        ],
+        "x-examples": {
+          "Example 1": {
+            "validationNumber": "11000000000",
+            "signature": "MDAwMDUw"
+          }
+        }
+      },
+      "IndividualTinResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "00"
+          },
+          "message": {
+            "type": "string",
+            "example": "SUCCESS"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "taxpayer": {
+                "type": "object",
+                "properties": {
+                  "tin": {
+                    "type": "string",
+                    "example": "1003123575"
+                  },
+                  "first_name": {
+                    "type": "string",
+                    "example": "JOHN"
+                  },
+                  "middle_name": {
+                    "type": "string",
+                    "example": "STEPHEN"
+                  },
+                  "last_name": {
+                    "type": "string",
+                    "example": "DOE"
+                  },
+                  "phone_no": {
+                    "type": "string",
+                    "example": "07000000000"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "johndoe@yahoo.com"
+                  },
+                  "date_of_birth": {
+                    "type": "string",
+                    "example": "04‐05‐1985"
+                  },
+                  "date_of_registration": {
+                    "type": "string",
+                    "example": "15‐05‐2013"
+                  },
+                  "tax_authority": {
+                    "type": "string",
+                    "example": "FCT Internal Revenue Service(FCT‐IRS)"
+                  },
+                  "tax_office": {
+                    "type": "string",
+                    "example": "N/A"
+                  }
+                }
+              },
+              "responseCode": {
+                "type": "string",
+                "example": "001"
+              },
+              "responseDescription": {
+                "type": "string",
+                "example": "Success"
+              }
+            }
+          }
+        },
+        "x-examples": {
+          "Example 1": {
+            "status": "00",
+            "message": "SUCCESS",
+            "data": {
+              "taxpayer": {
+                "tin": "1003123575",
+                "first_name": "JOHN",
+                "middle_name": "",
+                "last_name": "DOE",
+                "phone_no": "07000000000",
+                "email": "johndoe @yahoo.com",
+                "date_of_birth": "04‐05‐1985",
+                "date_of_registration": "15‐05‐2013",
+                "tax_authority": "FCT Internal Revenue Service(FCT‐IRS)",
+                "tax_office": null
+              },
+              "responseCode": "001",
+              "responseDescription": "Success"
+            }
+          }
+        }
+      },
+      "InvalidRequest": {
+        "type": "object",
+        "title": "InvalidRequest",
+        "description": "Expectation Failed. This means that one of the requirements to process the request is not available or invalid.",
+        "properties": {
+          "responseCode": {
+            "type": "string",
+            "example": "99"
+          },
+          "responseMessage": {
+            "type": "string",
+            "example": "Request Failed"
+          }
+        },
+        "x-examples": {
+          "Example 1": {
+            "responseCode": "99",
+            "responseMessage": "Request Failed"
+          }
+        }
+      },
+      "CorporateTinResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "00"
+          },
+          "message": {
+            "type": "string",
+            "example": "SUCCESS"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "taxpayer": {
+                "type": "object",
+                "properties": {
+                  "tin": {
+                    "type": "string",
+                    "example": "1000001311"
+                  },
+                  "registered_name": {
+                    "type": "string",
+                    "example": "B. A. ANAH & SONS LIMITED"
+                  },
+                  "registration_number": {
+                    "type": "string",
+                    "example": "RC105443"
+                  },
+                  "phone_no": {
+                    "type": "string",
+                    "example": "08132987563"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "anahandsons@gmail.com"
+                  },
+                  "date_of_incorporation": {
+                    "type": "string",
+                    "example": "18-12-1987"
+                  },
+                  "date_of_registration": {
+                    "type": "string",
+                    "example": "27-04-2012"
+                  },
+                  "tax_authority": {
+                    "type": "string",
+                    "example": "Federal Inland Revenue Service"
+                  },
+                  "tax_office": {
+                    "type": "string",
+                    "example": "MSTO MAIDUGURI"
+                  }
+                }
+              },
+              "responseCode": {
+                "type": "string",
+                "example": "001"
+              },
+              "responseDescription": {
+                "type": "string",
+                "example": "Success"
+              }
+            }
+          }
+        },
+        "x-examples": {
+          "Example 1": {
+            "status": "00",
+            "message": "SUCCESS",
+            "data": {
+              "taxpayer": {
+                "tin": "1000001311",
+                "registered_name": "B. A. ANAH & SONS LIMITED",
+                "registration_number": "RC105443",
+                "phone_no": null,
+                "email": null,
+                "date_of_incorporation": "18-12-1987",
+                "date_of_registration": "27-04-2012",
+                "tax_authority": "Federal Inland Revenue Service",
+                "tax_office": "MSTO MAIDUGURI"
+              },
+              "responseCode": "001",
+              "responseDescription": "Success"
+            }
+          }
+        }
+      },
+      "ApiRequestVNinIndirect": {
+        "type": "object",
+        "properties": {
+          "validationNumber": {
+            "type": "string",
+            "description": "This consists of Virtual Nin, RpShortcode and the device id separated by a pipe ('|'). E.g. LP987883338458NR|1234567|064216ac-2ee6-11ed-b14d-265bf18a7a52. The components are described below:\r\n| | |\r\n| -- | -- |\r\n|**Component** | **Description** |\r\n| LP987883338458NR | This is a virtual NIN example |\r\n| 1234567 | This is a RpShortcode example i.e. Relying party shortcode. This can be retrieved from the NIMC tokenization portal. |\r\n| 064216ac-2ee6-11ed-b14d-265bf18a7a52 | This is the Device ID |\r\n",
+            "example": "LP987883338458NR|1234567|064216ac-2ee6-11ed-b14d-265bf18a7a52"
+          },
+          "signature": {
+            "type": "string",
+            "description": "Base64 string of the calling client's username.",
+            "example": "MDAwMDAx"
+          }
+        },
+        "required": [
+          "validationNumber",
+          "signature"
+        ],
+        "x-examples": {
+          "Example 1": {
+            "validationNumber": "LP987883338458NR|1234567|064216ac-2ee6-11ed-b14d-265bf18a7a52",
+            "signature": "MDAwMDAx"
+          }
+        }
+      },
+      "VerifyVNinIndirectResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "00"
+          },
+          "message": {
+            "type": "string",
+            "example": "SUCCESS"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "string",
+                "description": "This is the encrypted data response",
+                "example": "JHXw9hA/n+Ymtf/XtkoyBEekzYMDwvx7wLM9cWeT+xcaY9mmyYao7jjyBwhVzG9XM2bA2trEZpogQLt65nnfgu55iH3x/5cGZnMHF6kbWK2pgE4JBtdweMhDjL62fhSRzax3EPGLJ1hLNBo6IAlOvB0IRUM51WAFAhJmNf1W+bvm58G1JpoAPLpz2bOAkRp7ETguBLhD01ziWd/Ws8VT3c/pUpB8PKxJBVOfCd5VdheUpH/XzIf+GzawJZzD6oR1PeLlTemZrMdg+Pr3Pvd9Svuk775xaLIzZNueWDeapXg5mwfex2a/M9vuIJPml/UXM66CivwOsdYn93+oScuOvBvCY5/9il8K6MWwr9B+MbKxgQBVqvSDqTMA0tx/WuMSwypxWGHSH/n99HQoEZo0F8f+Y7uzP9vrY+1m/cr3+oXzQ57KfcTRHBe+pW65xJe3K3RsBczEToYWUpyKX4JCkwUXBbrKeIfBFk7cpYJSoS40uu/e9KnKdvYRr6NMYljp"
+              },
+              "message": {
+                "type": "string",
+                "nullable": true
+              },
+              "decData": {
+                "type": "object",
+                "nullable": true,
+                "description": "This is the decrypted data response. This parameter is null as the requesting institution is expected to decrypt the returned data."
+              },
+              "success": {
+                "type": "boolean"
+              },
+              "photograph": {
+                "type": "string",
+                "example": "iVBORw0KGgoAAAANSUhEUgAAAbwAAAIyCAYAAACw4n/qAAAACXBIWXMAAAsTAAALEwEAmpwYAABINUlEQVR4Xu3dCXxdV3Xof13p3qt5ni3J8iDbkofYiZNAgjP1MTyavNIWWh4fhvYBr6XQxwMKJMADWvjDv5QyvTCVAoFAEygUwhQgCXHiOI5xEg+xLVuSB9mSbM2TNU/3rWPs4j"
+              }
+            }
+          }
+        },
+        "x-examples": {
+          "Example 1": {
+            "status": "00",
+            "message": "SUCCESS",
+            "data": {
+              "data": "JHXw9hA/n+Ymtf/XtkoyBEekzYMDwvx7wLM9cWeT+xcaY9mmyYao7jjyBwhVzG9XM2bA2trEZpogQLt65nnfgu55iH3x/5cGZnMHF6kbWK2pgE4JBtdweMhDjL62fhSRzax3EPGLJ1hLNBo6IAlOvB0IRUM51WAFAhJmNf1W+bvm58G1JpoAPLpz2bOAkRp7ETguBLhD01ziWd/Ws8VT3c/pUpB8PKxJBVOfCd5VdheUpH/XzIf+GzawJZzD6oR1PeLlTemZrMdg+Pr3Pvd9Svuk775xaLIzZNueWDeapXg5mwfex2a/M9vuIJPml/UXM66CivwOsdYn93+oScuOvBvCY5/9il8K6MWwr9B+MbKxgQBVqvSDqTMA0tx/WuMSwypxWGHSH/n99HQoEZo0F8f+Y7uzP9vrY+1m/cr3+oXzQ57KfcTRHBe+pW65xJe3K3RsBczEToYWUpyKX4JCkwUXBbrKeIfBFk7cpYJSoS40uu/e9KnKdvYRr6NMYljp",
+              "message": null,
+              "decData": null,
+              "success": true,
+              "photograph": "iVBORw0KGgoAAAANSUhEUgAAAbwAAAIyCAYAAACw4n/qAAAACXBIWXMAAAsTAAALEwEAmpwYAABINUlEQVR4Xu3dCXxdV3Xof13p3qt5ni3J8iDbkofYiZNAgjP1MTyavNIWWh4fhvYBr6XQxwMKJMADWvjDv5QyvTCVAoFAEygUwhQgCXHiOI5xEg+xLVuSB9mSbM2TNU/3rWPs4j"
+            }
+          }
+        }
+      },
+      "VNinFailedResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "78"
+          },
+          "message": {
+            "type": "string",
+            "example": "INVALID VIRTUAL NIN"
+          },
+          "data": {
+            "type": "string",
+            "example": "null"
+          }
+        },
+        "x-examples": {
+          "Example 1": {
+            "status": "78",
+            "message": "INVALID VIRTUAL NIN",
+            "data": null
+          }
+        }
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "title": "SuccessResponse",
+        "description": "This is the response gotten when the call to the endpoint is successful.",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "00"
+          },
+          "message": {
+            "type": "string",
+            "example": "SUCCESS"
+          }
+        },
+        "x-examples": {
+          "Example 1": {
+            "status": "00",
+            "message": "SUCCESS"
+          }
+        }
+      },
+      "RequestResponse": {
+        "type": "object",
+        "title": "RequestResponse",
+        "properties": {
+          "DocumentNo": {
+            "type": "string",
+            "example": "11000000000"
+          },
+          "FirstName": {
+            "type": "string",
+            "example": "YAHAYA"
+          },
+          "SurName": {
+            "type": "string",
+            "example": "MUSA"
+          },
+          "MidleName": {
+            "type": "string",
+            "example": "ISAH"
+          },
+          "Nin": {
+            "type": "string",
+            "example": "52183237373"
+          },
+          "TelephoneNo": {
+            "type": "string",
+            "example": "08124258110"
+          },
+          "BirthDate": {
+            "type": "string",
+            "example": "17-03-1979"
+          },
+          "Photo": {
+            "type": "string"
+          },
+          "Gender": {
+            "type": "string",
+            "example": "M"
+          },
+          "MaidenName": {
+            "type": "string",
+            "nullable": true
+          },
+          "BankName": {
+            "type": "string",
+            "example": "First Bank"
+          },
+          "BranchName": {
+            "type": "string",
+            "example": "NULL"
+          },
+          "TrackingNumber": {
+            "type": "string",
+            "example": "4741**14"
+          },
+          "ResponseCode": {
+            "type": "string",
+            "example": "00"
+          },
+          "ResponseDescription": {
+            "type": "string",
+            "example": "SUCCESS"
+          }
+        },
+        "x-examples": {
+          "Example 1": {
+            "DocumentNo": "11000000000",
+            "FirstName": "YAHAYA",
+            "SurName": "MUSA",
+            "MidleName": "ISAH",
+            "Nin": "52183237373",
+            "TelephoneNo": "08124258110",
+            "BirthDate": "17-03-1979",
+            "Photo": "string",
+            "Gender": "M",
+            "MaidenName": "string",
+            "BankName": "First Bank",
+            "BranchName": "NULL",
+            "TrackingNumber": "4741**14",
+            "ResponseCode": "00",
+            "ResponseDescription": "SUCCESS"
+          }
+        }
+      }
+    }
+  },
+  "x-internal": true,
+  "x-extension-1": {
+    "readable_by": [
+      "NIBSSInternalTeam",
+      "Banks",
+      "PSSP",
+      "MicrofinanceBanks",
+      "MMO",
+      "Vendor"
+    ]
+  }
+}

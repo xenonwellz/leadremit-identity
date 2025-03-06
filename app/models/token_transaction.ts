@@ -1,14 +1,15 @@
 import { DateTime } from 'luxon'
-import { column, BaseModel, belongsTo } from '@adonisjs/lucid/orm'
+import { column, BaseModel, belongsTo, beforeCreate } from '@adonisjs/lucid/orm'
 import User from '#models/user'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import { v4 as uuidv4 } from 'uuid'
 
 export default class TokenTransaction extends BaseModel {
     @column({ isPrimary: true })
-    declare id: number
+    declare id: string
 
     @column()
-    declare userId: number
+    declare userId: string
 
     @column()
     declare amount: number
@@ -20,6 +21,9 @@ export default class TokenTransaction extends BaseModel {
     declare paymentProvider: string
 
     @column()
+    declare transactionType: 'credit' | 'debit'
+
+    @column()
     declare status: string
 
     @column.dateTime({ autoCreate: true })
@@ -27,6 +31,11 @@ export default class TokenTransaction extends BaseModel {
 
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     declare updatedAt: DateTime
+
+    @beforeCreate()
+    static generateId(tokenTransaction: TokenTransaction) {
+        tokenTransaction.id = uuidv4()
+    }
 
     @belongsTo(() => User)
     declare user: BelongsTo<typeof User>

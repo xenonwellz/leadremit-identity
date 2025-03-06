@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, column, beforeCreate } from '@adonisjs/lucid/orm'
+import { v4 as uuidv4 } from 'uuid'
 
 export default class VerificationSetting extends BaseModel {
     @column({ isPrimary: true })
@@ -22,4 +23,9 @@ export default class VerificationSetting extends BaseModel {
 
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     declare updated_at: DateTime
+
+    @beforeCreate()
+    static generateId(verificationSetting: VerificationSetting) {
+        verificationSetting.id = uuidv4()
+    }
 }

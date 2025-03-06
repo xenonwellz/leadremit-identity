@@ -9,7 +9,8 @@ const AdminDashboardController = () => import('#controllers/admin/dashboard_cont
 const AdminUsersController = () => import('#controllers/admin/users_controller')
 const AdminsController = () => import('#controllers/admin/admins_controller')
 const SettingsController = () => import('#controllers/admin/settings_controller')
-
+const VerificationController = () => import('#controllers/verification_controller')
+const TokensController = () => import('#controllers/tokens_controller')
 // User routes
 router
     .group(() => {
@@ -28,9 +29,10 @@ router
         router.get('history', [AppController, 'history'])
         router.get('settings', [AppController, 'settings'])
         router.post('settings/update', [AppController, 'updateSettings'])
-        router.post('verify/bvn', [AppController, 'verifyBvn'])
-        router.post('verify/nin', [AppController, 'verifyNin'])
         router.delete('logout', [AppController, 'logout'])
+
+        router.post('verify', [VerificationController, 'verify'])
+        router.post('tokens/purchase', [TokensController, 'purchase'])
     })
     .use(middleware.auth())
 

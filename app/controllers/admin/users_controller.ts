@@ -44,15 +44,12 @@ export default class AdminUsersController {
             return response.redirect().back()
         }
 
-        // Add tokens to user balance
-        user.tokenBalance += Number(amount)
-        await user.save()
-
         // Create token transaction record
         await TokenTransaction.create({
             userId: user.id,
             amount: Number(amount),
-            transactionReference: `ADMIN_CREDIT_${user.id}`,
+            transactionType: 'credit',
+            transactionReference: `ADMIN_CREDIT_${Date.now()}`,
             paymentProvider: 'admin',
             status: 'completed',
         })
