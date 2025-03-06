@@ -1,10 +1,11 @@
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/app-sidebar'
 import { ShieldCheck } from 'lucide-react'
-
+// import { Toaster } from '@/components/ui/sonner'
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <SidebarProvider>
+            {/* <Toaster richColors /> */}
             <AppSidebar />
             <div className="flex flex-col w-full">
                 <header className="w-full p-4 border-b flex items-center justify-between sticky top-0 bg-background">

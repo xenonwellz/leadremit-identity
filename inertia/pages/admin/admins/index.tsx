@@ -14,8 +14,16 @@ import {
     TableRow,
 } from '@/components/ui/table'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { toast } from 'sonner'
 import { adminRoutes } from '#shared/routes'
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 
 interface Admin {
     id: number
@@ -32,6 +40,8 @@ interface AdminsProps {
 
 export default function Admins({ admins, currentAdmin }: AdminsProps) {
     const [searchTerm, setSearchTerm] = useState('')
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false)
+    const [successMessage, setSuccessMessage] = useState('')
 
     const filteredAdmins = admins.filter(
         (admin) =>
@@ -52,22 +62,9 @@ export default function Admins({ admins, currentAdmin }: AdminsProps) {
         form.appendChild(methodInput)
         document.body.appendChild(form)
 
-        toast.promise(
-            new Promise((resolve) => {
-                form.addEventListener('submit', () => resolve(true))
-                form.submit()
-            }),
-            {
-                loading: 'Deleting administrator...',
-                success: `${admin.fullName} has been deleted successfully`,
-                error: 'Failed to delete administrator',
-                classNames: {
-                    toast: 'group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg',
-                },
-                duration: 4000,
-                richColors: true,
-            }
-        )
+        form.submit()
+        setSuccessMessage(`${admin.fullName} has been deleted successfully`)
+        setShowSuccessAlert(true)
     }
 
     return (
@@ -202,6 +199,17 @@ export default function Admins({ admins, currentAdmin }: AdminsProps) {
                     </CardContent>
                 </Card>
             </div>
+            <AlertDialog open={showSuccessAlert} onOpenChange={setShowSuccessAlert}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Success</AlertDialogTitle>
+                        <AlertDialogDescription>{successMessage}</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogAction>OK</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </AdminLayout>
     )
 }

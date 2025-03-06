@@ -6,10 +6,18 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { adminRoutes } from '#shared/routes'
-import { toast } from 'sonner'
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 
 export default function Settings() {
-    const [showSuccess, setShowSuccess] = useState(false)
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false)
 
     const { data, setData, post, processing, errors, reset } = useForm({
         currentPassword: '',
@@ -22,9 +30,7 @@ export default function Settings() {
         post(adminRoutes.app.settings, {
             onSuccess: () => {
                 reset('currentPassword', 'password', 'passwordConfirmation')
-                setShowSuccess(true)
-                setTimeout(() => setShowSuccess(false), 5000)
-                toast.success('Your password has been updated successfully')
+                setShowSuccessAlert(true)
             },
         })
     }
@@ -45,12 +51,6 @@ export default function Settings() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="p-6">
-                        {showSuccess && (
-                            <p className="text-sm text-green-500">
-                                Your password has been updated successfully.
-                            </p>
-                        )}
-
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="currentPassword">Current Password</Label>
@@ -102,6 +102,20 @@ export default function Settings() {
                     </CardContent>
                 </Card>
             </div>
+
+            <AlertDialog open={showSuccessAlert} onOpenChange={setShowSuccessAlert}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Success</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Your password has been updated successfully
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogAction>OK</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </AdminLayout>
     )
 }

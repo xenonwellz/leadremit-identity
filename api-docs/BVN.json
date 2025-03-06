@@ -1,0 +1,598 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "BVN Search- USSD",
+    "description": "Introduction\n==\n\nThe BVN USSD API is a BVN retrieval and validation service for use by the Value Added Service (VAS) Providers such as Nigerian Mobile Network Operators to provide their customers with the ability to retrieve and validate their BVN by dialing pre-configured USSD codes.\n\nOnce the VAS Providers integrate with the API, their customers can retrieve or validate their BVN by calling the USSD codes.\n\nThis API allows the users to perform the following operations.\n\n- **Retrieve BVN By Date of Birth:** This method is used to retrieve an end user’s BVN. It is called by the VAS when the customer dials the specific USSD code implemented for this purpose.\n\n- **Retrieve Name by BVN:** This method is used to validate the BVN supplied by returning the name associated with it. It is called by the VAS when the customer dials the specific USSD code implemented for this purpose.\n\n- **Retrieve Accounts:** This method is used to retrieve the account of a user. It is called by the VAS when the customer dials the specific USSD code implemented for this purpose.\n\n\nOnboarding\n==\n\nTo get started with the BVN USSD Validation API, you need to be profiled on the NIBSS Developer portal.\n\nYou have to fill in some basic information for identification purposes. This information is collected in the [REQUEST CREDENTIALS FORM](https://forms.office.com/pages/responsepage.aspx?id=G3ucJwa6e0KmgcilSS0pPcemIqHoBy9KvH3iwjGMrclUNzBJTkNWME81WFBTSk81RUU0TzAxMVZVUC4u). The form requires you to fill in your email address and state the reason(s) you should be profiled on the service (whether it is for test or production).\n\nOnce you submit the request, You will receive an email containing these credentials: [Client ID](https://docs.google.com/document/d/1GvRDUIIOQafEmD3LA9zLKTjyjsAbLS0MKSktv6uiJ_s/edit#heading=h.vfpoipdhm5jy), [Client Secret](https://docs.google.com/document/d/1GvRDUIIOQafEmD3LA9zLKTjyjsAbLS0MKSktv6uiJ_s/edit#heading=h.eeq74rxqmzl0), and [Aggregator code](https://docs.google.com/document/d/1GvRDUIIOQafEmD3LA9zLKTjyjsAbLS0MKSktv6uiJ_s/edit#heading=h.g52717mnmxpy).\n\nThe Client ID, Client Secret, and Aggregator code are the credentials that would be used to identify you as a client on the application. Below explains what each credential means:\n\n  \n\n**Client ID**\n\nThis is a unique set of identifiers assigned to you as a client/customer for every request made on the application. This is mainly used when you want to generate a [TOKEN](https://docs.google.com/document/d/1wsxxbsA5PCo6we0QEDH-GvF0i3YsiHc726kngk_q9oY/edit#heading=h.s2ff8d4wr5zr) for all request calls on the application. Check [AUTHENTICATION](https://docs.google.com/document/d/1wsxxbsA5PCo6we0QEDH-GvF0i3YsiHc726kngk_q9oY/edit#heading=h.tigc8rikvrnu)  to know how to use this credential to obtain a token.\n\n**Client SECRET**\n\nThis is a unique set of identifiers that is denoted as a password for every request sent. This is also used alongside the Client ID for generating an [AUTHENTICATION](https://docs.google.com/document/d/1wsxxbsA5PCo6we0QEDH-GvF0i3YsiHc726kngk_q9oY/edit#heading=h.tigc8rikvrnu)  token to make successful calls to the BVN USSD Validation API.\n\n**Aggregator Code**\n\nThis is a unique 6-digit code assigned to each institution as an identifier. It is a mandatory header that must be passed before sending a request.\n\nCheck [AUTHENTICATION](https://docs.google.com/document/d/1yokMozd-CMn24MbFVvBLtBNgpZHch3RZwRdD7E6nlds/edit) to see how you can generate an access token to enable you to make successful calls to the BVN USSD Validation API.\n\n\nAPI Defined Codes\n==\nThese are custom response codes returned by the API.\n\n\n| **Response Code** | **Message** | **Description** |\n|--|--|--|\n| 200 | Successful | Success |\n| 4001 | DetailDoNotMatchAnyRecord | Record do not exist |\n| 4002 | MultipleBvnError | Two or more BVN match same query\n| 4003 | PhoneNumberDoNotExist | Phone number supplied not in BVN database |\n| 4005 | InvalidDOB | Empty Response Error |\n| 4006 | InvalidPhoneNumber |  Phone Number not in the defined format |\n| 4009 | InvalidClientSupplied | Client is not configuredr |\n| 4010 | CanNotResetUser | Client can’t reset password. Invalid credential |\n| 4011 | LoginNotSuccessful | Login operation failed. Invalid Credential |\n| 4012 | InvalidRequest | Request is invalid. Check request format if it is null |\n| 4013 | InactiveClient | Client is disabled. Make sure it enabled |\n| 4015 | InvalidBvn | BVN supplied is invalid |\n| 4016 | NotPermittedToCallMethod | Client is not permitted to call the endpoint |\n| 4017 | WrongOrExpiredBearerToken | JWT token is invalid or expired |\n\n\nHTTP status codes\n==\n\nThese are 3-digits responses issued by the server. They are standard responses and can be easily interpreted based on their first digits.\n\n**2XX** - Success of some kind\n\n**4XX** - Error occurred in client’s part\n\n**5XX** - Error occurred in server’s part\n\n\nApplication Response Codes\n==\n\n**200** - OK\n\n**201** - Created\n\n**202** - Accepted (Request accepted, and queued for execution)\n\n**400** - Bad request\n\n**401** - Authentication failure\n\n**403** - Forbidden\n\n**404** - Resource not found\n\n**405** - Method Not Allowed\n\n**409** - Conflict\n\n**412** - Precondition Failed\n\n**413** - Request Entity Too Large\n\n**500** - Internal Server Error\n\n**501** - Not Implemented\n\n**503** - Service Unavailable",
+    "termsOfService": "https://www.nibss-plc.com.ng/services/terms-of-use/",
+    "contact": {
+      "name": "NIBSS Technical Implementation Support",
+      "email": "technicalimplementation@nibss-plc.com.ng",
+      "url": "https://contactcentre.nibss-plc.com.ng/support/home"
+    },
+    "license": {
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html",
+      "name": "Apache 2.0"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://apitest.nibss-plc.com.ng/bvnussd/v2",
+      "description": ""
+    }
+  ],
+  "paths": {
+    "/retrieveBvnByDateofBirth": {
+      "post": {
+        "summary": "Retrieve BVN By Date Of Birth",
+        "description": "This method is used to retrieve the BVN of the end user by providing the end user's phone number and birth date. \r\n\r\nIt is called by the Value Added Service (VAS) when a customer dials the associated USSD code i.e * 556 * 0 #” provided that the phone number used is the one associated with the BVN. ",
+        "operationId": "/retrieveBvnByDateofBirth",
+        "requestBody": {
+          "description": "",
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/retrieveBvnByDateofBirthRequest"
+              },
+              "examples": {
+                "Example 1": {
+                  "value": {
+                    "PhoneNumber": "'2348029039468'",
+                    "DateOfBirth": "'02052018'"
+                  }
+                },
+                "Example 2": {
+                  "value": {
+                    "PhoneNumber": "'2348029039468'",
+                    "DateOfBirth": "'02052018'"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "This is the success response received when your call to retrieve the BVN of a customer is successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/retrieveBvnByDateofBirthResponse"
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "bvn": "22222222259",
+                      "responseCode": "200",
+                      "responseDescription": "\"Successful\""
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "This is a sample error message you get when your call to retrieve the BVN of a customer fails.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/retrieveBvnByDateofBirthError"
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "bvn": "000***00000",
+                      "responseCode": "4001",
+                      "responseDescription": "DetailDoNotMatchAnyRecord"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "servers": [
+          {
+            "url": "https://apitest.nibss-plc.com.ng/bvnussd/v2",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "/retrieveBvn": {
+      "post": {
+        "summary": "Retrieve Name by BVN",
+        "description": "This method is used to retrieve the Name associated with a BVN. \n\nIt is called by the Value Added Service (VAS) when a customer dials the USSD code * 565 * 1 # with the phone number associated with the BVN.\n",
+        "operationId": "/retrieveBvn",
+        "requestBody": {
+          "description": "This is a sample error message you get when your call to retrieve the name associated with a BVN fails.",
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/retrieveBvnRequest"
+              },
+              "examples": {
+                "Example 1": {
+                  "value": {
+                    "PhoneNumber": "'2348029039468'",
+                    "bvn": "'22222222248'"
+                  }
+                },
+                "Example 2": {
+                  "value": {
+                    "PhoneNumber": "'2348029039468'",
+                    "bvn": "'22222222248'"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "This is the success response received when your call to retrieve the name associated with a BVN is successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/retrieveBvnResponse"
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "Name": "Adeyemi Chinaza Shettima ",
+                      "responseCode": "200",
+                      "responseDescription": "\"Successful\""
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "This is a sample error message you get when your call to retrieve the name associated with a BVN fails.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/retrieveBvnError"
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "name": "000***00000",
+                      "responseCode": "4001",
+                      "responseDescription": "DetailDoNotMatchAnyRecord"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "servers": [
+          {
+            "url": "https://apitest.nibss-plc.com.ng/bvnussd/v2",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "/retrieveAccounts": {
+      "get": {
+        "summary": "Retrieve Accounts",
+        "description": "This method is used to retrieve the account of a user by providing the end user's phone number, birth date and BVN.",
+        "operationId": "get-retrieveAccounts",
+        "parameters": [
+          {
+            "name": "PhoneNumber",
+            "in": "query",
+            "description": "This refers to the phone number associated with the account to be retrieved. It is written without the special character(+) e.g “2348153465161\"",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "2348153465161"
+            }
+          },
+          {
+            "name": "DateOfBirth",
+            "in": "query",
+            "description": "This is the BVN owner’s date of birth in the format \"DDMMYYYY\" An example is “19101952”",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "19101952"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "This parameter specifies the number of pages returned from 1 - 100.",
+            "schema": {
+              "type": "string",
+              "example": "1"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "This parameter specifies the number of records displayed per page. By default, 10 records are returned if the parameter is not provided. When provided, up to 100 records per page can be displayed.",
+            "schema": {
+              "type": "string",
+              "example": "10"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "This is the success response received when the account is successfully retrieved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "responseData": {
+                      "type": "array",
+                      "description": "A list of accounts with masked account numbers, with their status (A for Active, D for Dormant).",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "responseCode": {
+                      "type": "integer",
+                      "description": "The status code received indicating success or failure",
+                      "example": 200
+                    },
+                    "responseDescription": {
+                      "type": "string",
+                      "description": "Response description indicating that the request was successful or failed.",
+                      "example": "Successful"
+                    }
+                  },
+                  "x-examples": {
+                    "Example 1": {
+                      "responseData": [
+                        "GTB 000***1652 (A)",
+                        "GTB 003***4143 (A)",
+                        "GTB 500***1652 (D)",
+                        "GTB 000***0001 (D)",
+                        "GTB 092***4143 (A)"
+                      ],
+                      "responseCode": 200,
+                      "responseDescription": "Successful"
+                    }
+                  }
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "responseData": [
+                        "GTB 000***1652 (A)",
+                        "GTB 003***4143 (A)",
+                        "GTB 500***1652 (D)",
+                        "GTB 000***0001 (D)",
+                        "GTB 092***4143 (A)"
+                      ],
+                      "responseCode": 200,
+                      "responseDescription": "Successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "This is a sample error message you get when the account fails to be retrieved. ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "responseCode": {
+                      "type": "integer",
+                      "description": "The status code received indicating success or failure",
+                      "example": 4006
+                    },
+                    "responseDescription": {
+                      "type": "string",
+                      "description": "Response description indicating that the request was successful or failed.",
+                      "example": "InvalidPhoneNumber"
+                    }
+                  },
+                  "x-examples": {
+                    "Example 1": {
+                      "responseCode": 4006,
+                      "responseDescription": "InvalidPhoneNumber"
+                    }
+                  }
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "responseCode": 4006,
+                      "responseDescription": "InvalidPhoneNumber"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "servers": [
+          {
+            "url": "https://apitest.nibss-plc.com.ng/bvnussd/v2",
+            "description": ""
+          }
+        ],
+        "x-internal": true
+      }
+    },
+    "/retrieveAcronymDescription": {
+      "get": {
+        "summary": "Retrieve Acronym Description",
+        "description": "This method is used to retrieve the full acronym descriptions of the abbreviated account status displayed alongside the retrieved account numbers.\r\n\r\n**Note:** Only one of the two query parameters can be passed. Either the 'accountStatus' or 'bankShortName' parameters but **NOT BOTH**. ",
+        "operationId": "get-retrieveAcronymDescription",
+        "parameters": [
+          {
+            "name": "accountStatus",
+            "in": "query",
+            "description": "This indicates the current status of the account i.e. A (Active), D (Dormant), PND (Post No Debit), PNC (Post No Credit), I (Inactive), and F (Total Freeze)",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "A",
+                "D",
+                "PND",
+                "PNC",
+                "I",
+                "F"
+              ],
+              "example": "A"
+            }
+          },
+          {
+            "name": "bankShortName",
+            "in": "query",
+            "description": "This indicates the bank acronym i.e. FBN for First Bank, UBA for United Bank of Africa, etc. ",
+            "schema": {
+              "type": "string",
+              "example": "UBA"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "This is the success response received when the account status is successfully retrieved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "responseData": {
+                      "type": "string",
+                      "description": "The status of the accounts A (Active), D (Dormant), PND (Post No Debit), PNC (Post No Credit), I (Inactive), and F (Total Freeze)",
+                      "example": "A (Active)"
+                    },
+                    "responseCode": {
+                      "type": "integer",
+                      "description": "The status code received indicating success or failure",
+                      "default": 200
+                    },
+                    "responseDescription": {
+                      "type": "string",
+                      "description": "Response description indicating that the request was successful or failed.",
+                      "example": "Successful"
+                    }
+                  },
+                  "x-examples": {
+                    "Example 1": {
+                      "responseData": "Active (A)",
+                      "responseCode": 200,
+                      "responseDescription": "Successful"
+                    }
+                  }
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "responseData": "A (Active)",
+                      "responseCode": 200,
+                      "responseDescription": "Successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "This is a sample error message you get when the account status fails to be retrieved. ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "responseCode": {
+                      "type": "integer",
+                      "description": "The status code received indicating success or failure",
+                      "example": 4012
+                    },
+                    "responseDescription": {
+                      "type": "string",
+                      "description": "Response description indicating that the request was successful or failed.",
+                      "example": "InvalidRequest"
+                    }
+                  },
+                  "x-examples": {
+                    "Example 1": {
+                      "responseCode": 4012,
+                      "responseDescription": "InvalidRequest"
+                    }
+                  }
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "responseCode": 4012,
+                      "responseDescription": "InvalidRequest"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "servers": [
+          {
+            "url": "https://apitest.nibss-plc.com.ng/bvnussd/v2",
+            "description": ""
+          }
+        ],
+        "x-internal": true
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "api_key": {
+        "type": "apiKey",
+        "name": "api_key",
+        "in": "header"
+      }
+    },
+    "schemas": {
+      "retrieveBvnByDateofBirthRequest": {
+        "type": "object",
+        "properties": {
+          "PhoneNumber": {
+            "type": "string",
+            "description": "This refers to the phone number associated with the BVN being validated. It is written without the special character(+) e.g “2348153465161”.",
+            "example": "'2348029039468'"
+          },
+          "DateOfBirth": {
+            "type": "string",
+            "description": "This is the BVN owner’s date of birth in the format \"DDMMYYYY\" An example is “04071998”.",
+            "example": "'02052018'"
+          }
+        }
+      },
+      "retrieveBvnByDateofBirthResponse": {
+        "type": "object",
+        "properties": {
+          "bvn": {
+            "type": "string",
+            "example": "22222222259"
+          },
+          "responseCode": {
+            "type": "string",
+            "example": "200"
+          },
+          "responseDescription": {
+            "type": "string",
+            "example": "\"Successful\""
+          }
+        }
+      },
+      "retrieveBvnByDateofBirthError": {
+        "type": "object",
+        "properties": {
+          "bvn": {
+            "type": "string",
+            "example": "000***00000"
+          },
+          "responseCode": {
+            "type": "string",
+            "example": "4001"
+          },
+          "responseDescription": {
+            "type": "string",
+            "example": "DetailDoNotMatchAnyRecord"
+          }
+        }
+      },
+      "retrieveBvnRequest": {
+        "type": "object",
+        "properties": {
+          "PhoneNumber": {
+            "type": "string",
+            "description": "This refers to the phone number associated with the BVN being validated. It is written without the special character(+) e.g “2348153465161”.",
+            "example": "'2348029039468'"
+          },
+          "bvn": {
+            "type": "string",
+            "description": "This refers to the 11-digit Bank verification number being validated e.g “22222222259”.",
+            "example": "'22222222248'"
+          }
+        }
+      },
+      "retrieveBvnResponse": {
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string",
+            "example": "Adeyemi Chinaza Shettima "
+          },
+          "responseCode": {
+            "type": "string",
+            "example": "200"
+          },
+          "responseDescription": {
+            "type": "string",
+            "example": "\"Successful\""
+          }
+        }
+      },
+      "retrieveBvnError": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "000***00000"
+          },
+          "responseCode": {
+            "type": "string",
+            "example": "4001"
+          },
+          "responseDescription": {
+            "type": "string",
+            "example": "DetailDoNotMatchAnyRecord"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "api_key": []
+    }
+  ],
+  "x-internal": true,
+  "x-headmatter": {
+    "readable_by": [
+      "NIBSSInternalTeam",
+      "MicrofinanceBanks",
+      "PSSP",
+      "Banks",
+      "MMO"
+    ]
+  }
+}

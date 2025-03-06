@@ -101,8 +101,16 @@ export default function Transactions({ transactions, pagination }: TransactionsP
                                         <TableRow key={transaction.id}>
                                             <TableCell className="font-medium">
                                                 <div className="flex items-center">
-                                                    <Coins className="h-4 w-4 mr-2 text-green-500" />
-                                                    {transaction.amount}
+                                                    <Coins className="h-4 w-4 mr-2" />
+                                                    <span
+                                                        className={
+                                                            transaction.amount < 0
+                                                                ? 'text-red-500'
+                                                                : 'text-green-600'
+                                                        }
+                                                    >
+                                                        {transaction.amount}
+                                                    </span>
                                                 </div>
                                             </TableCell>
                                             <TableCell>{transaction.user.fullName}</TableCell>

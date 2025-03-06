@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { base64Encode } from '#utils/encoding'
+import env from '#start/env'
 
 interface CIVConfig {
     baseUrl: string
@@ -10,10 +11,10 @@ interface CIVConfig {
 
 export default class CIVService {
     private static config: CIVConfig = {
-        baseUrl: process.env.NIBSS_CIV_BASE_URL || 'https://apitest.nibss-plc.com.ng/identity/v2',
-        clientId: process.env.NIBSS_CLIENT_ID || '',
-        clientSecret: process.env.NIBSS_CLIENT_SECRET || '',
-        apiKey: process.env.NIBSS_API_KEY || '',
+        baseUrl: env.get('NIBSS_CIV_BASE_URL'),
+        clientId: env.get('NIBSS_CLIENT_ID'),
+        clientSecret: env.get('NIBSS_CLIENT_SECRET'),
+        apiKey: env.get('NIBSS_API_KEY'),
     }
 
     private static async getAuthToken(): Promise<string> {

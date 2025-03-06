@@ -25,6 +25,18 @@ export default await Env.create(new URL('../', import.meta.url), {
     DB_PASSWORD: Env.schema.string.optional(),
     DB_DATABASE: Env.schema.string(),
 
+    /*
+  |----------------------------------------------------------
+  | Variables for configuring NIBSS API
+  |----------------------------------------------------------
+  */
+    NIBSS_BVN_BASE_URL: Env.schema.string(),
+    NIBSS_CIV_BASE_URL: Env.schema.string(),
+
+    NIBSS_CLIENT_ID: Env.schema.string(),
+    NIBSS_CLIENT_SECRET: Env.schema.string(),
+    NIBSS_API_KEY: Env.schema.string(),
+
     DOMAIN: Env.schema.string(),
     LEADREMIT_API_KEY: Env.schema.string(),
 })
