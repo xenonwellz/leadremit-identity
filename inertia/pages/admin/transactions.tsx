@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { Link } from '@inertiajs/react'
+import { Link, router } from '@inertiajs/react'
 import { Coins, Eye, Search } from 'lucide-react'
 import AdminLayout from '@/layouts/admin.layout'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+
 import {
     Table,
     TableBody,
@@ -14,29 +14,30 @@ import {
     TableRow,
 } from '@/components/ui/table'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-
-interface User {
-    id: string
-    fullName: string
-    email: string
-}
-
-interface Transaction {
-    id: string
-    amount: number
-    status: string
-    paymentProvider: string
-    transactionReference: string
-    createdAt: string
-    user: User
-}
+import { PaginationData } from '@/interfaces/pagination'
+import { Pagination } from '@/components/ui/pagination'
+import { VerificationStatusBadge } from '@/components/verification-status-badge'
+import TokenTransaction from '#models/token_transaction'
+import { format } from 'date-fns'
 
 interface TransactionsProps {
-    transactions: Transaction[]
+    transactions: TokenTransaction[]
+    pagination: PaginationData
 }
 
-export default function Transactions({ transactions }: TransactionsProps) {
+export default function Transactions({ transactions, pagination }: TransactionsProps) {
     const [searchTerm, setSearchTerm] = useState('')
+
+    const handlePageChange = (page: number) => {
+        router.get(
+            window.location.pathname,
+            { page },
+            {
+                preserveScroll: true,
+                preserveState: true,
+            }
+        )
+    }
 
     const filteredTransactions = transactions.filter(
         (transaction) =>
@@ -69,7 +70,7 @@ export default function Transactions({ transactions }: TransactionsProps) {
                 <Card className="bg-muted/30 shadow-none p-0">
                     <CardHeader className="p-6 border-b">
                         <CardTitle className="text-base">
-                            All Transactions ({filteredTransactions.length})
+                            All Transactions ({pagination.total})
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="p-6">
@@ -81,7 +82,7 @@ export default function Transactions({ transactions }: TransactionsProps) {
                                     <TableHead>Provider</TableHead>
                                     <TableHead>Reference</TableHead>
                                     <TableHead>Status</TableHead>
-                                    <TableHead>Date</TableHead>
+                                    <TableHead>Date & Time</TableHead>
                                     <TableHead className="text-right">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -112,22 +113,15 @@ export default function Transactions({ transactions }: TransactionsProps) {
                                                 </span>
                                             </TableCell>
                                             <TableCell>
-                                                <Badge
-                                                    variant={
-                                                        transaction.status === 'completed'
-                                                            ? 'success'
-                                                            : transaction.status === 'pending'
-                                                              ? 'warning'
-                                                              : 'error'
-                                                    }
-                                                >
-                                                    {transaction.status}
-                                                </Badge>
+                                                <VerificationStatusBadge
+                                                    status={transaction.status}
+                                                />
                                             </TableCell>
                                             <TableCell>
-                                                {new Date(
-                                                    transaction.createdAt
-                                                ).toLocaleDateString()}
+                                                {format(
+                                                    new Date(transaction.createdAt.toString()),
+                                                    'MMM d, yyyy HH:mm'
+                                                )}
                                             </TableCell>
                                             <TableCell className="text-right">
                                                 <Button asChild size="sm" variant="ghost">
@@ -142,6 +136,10 @@ export default function Transactions({ transactions }: TransactionsProps) {
                                 )}
                             </TableBody>
                         </Table>
+
+                        <div className="mt-4">
+                            <Pagination {...pagination} onPageChange={handlePageChange} />
+                        </div>
                     </CardContent>
                 </Card>
             </div>

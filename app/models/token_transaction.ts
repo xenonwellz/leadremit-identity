@@ -24,7 +24,7 @@ export default class TokenTransaction extends BaseModel {
     declare transactionType: 'credit' | 'debit'
 
     @column()
-    declare status: string
+    declare status: 'pending' | 'success' | 'failed'
 
     @column.dateTime({ autoCreate: true })
     declare createdAt: DateTime

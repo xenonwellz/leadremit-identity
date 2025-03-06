@@ -9,14 +9,23 @@ export default class AdminsController {
     /**
      * Display list of admins
      */
-    async index({ inertia, auth }: HttpContext) {
+    async index({ inertia, auth, request }: HttpContext) {
         const currentAdmin = auth.use('admin').user!
-        const admins = await Admin.query().orderBy('created_at', 'desc')
+        const page = request.input('page', 1)
+        const perPage = 10
+
+        const admins = await Admin.query().orderBy('created_at', 'desc').paginate(page, perPage)
 
         return inertia.render('admin/admins/index', {
             title: 'Manage Administrators',
-            admins,
+            admins: admins.all(),
             currentAdmin,
+            pagination: {
+                currentPage: admins.currentPage,
+                totalPages: Math.ceil(admins.total / perPage),
+                perPage,
+                total: admins.total,
+            },
         })
     }
 

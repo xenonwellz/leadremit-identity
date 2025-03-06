@@ -40,7 +40,7 @@ export default class VerificationService {
         await Verification.create({
             userId,
             verificationType: type.id,
-            status: result.success ? 'success' : 'failed',
+            status: result.success ? 'success' : 'error',
             responseData: result,
             creditsUsed: verificationTypeConfig.cost,
         })

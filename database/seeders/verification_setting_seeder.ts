@@ -9,10 +9,10 @@ export default class extends BaseSeeder {
 
         // Create settings for each verification type
         const settings = Object.values(verificationConfig.types).map((type) => ({
-            verification_type: type.id,
-            code_name: type.name,
-            token_cost: type.cost,
-            is_enabled: true,
+            verificationType: type.id,
+            codeName: type.name,
+            tokenCost: type.cost,
+            isEnabled: true,
         }))
 
         await VerificationSetting.createMany(settings)

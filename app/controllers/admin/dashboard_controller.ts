@@ -39,32 +39,51 @@ export default class AdminDashboardController {
             users,
         })
     }
-
     /**
      * Display the verifications list
      */
-    async verifications({ inertia }: HttpContext) {
+    async verifications({ inertia, request }: HttpContext) {
+        const page = request.input('page', 1)
+        const perPage = 10
+
         const verifications = await Verification.query()
             .preload('user')
             .orderBy('created_at', 'desc')
+            .paginate(page, perPage)
 
         return inertia.render('admin/verifications', {
             title: 'Manage Verifications',
-            verifications,
+            verifications: verifications.all(),
+            pagination: {
+                currentPage: verifications.currentPage,
+                totalPages: Math.ceil(verifications.total / perPage),
+                perPage,
+                total: verifications.total,
+            },
         })
     }
 
     /**
      * Display the transactions list
      */
-    async transactions({ inertia }: HttpContext) {
+    async transactions({ inertia, request }: HttpContext) {
+        const page = request.input('page', 1)
+        const perPage = 10
+
         const transactions = await TokenTransaction.query()
             .preload('user')
             .orderBy('created_at', 'desc')
+            .paginate(page, perPage)
 
         return inertia.render('admin/transactions', {
             title: 'Manage Transactions',
-            transactions,
+            transactions: transactions.all(),
+            pagination: {
+                currentPage: transactions.currentPage,
+                totalPages: Math.ceil(transactions.total / perPage),
+                perPage,
+                total: transactions.total,
+            },
         })
     }
 }

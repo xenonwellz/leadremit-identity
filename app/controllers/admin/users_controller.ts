@@ -2,20 +2,52 @@ import { HttpContext } from '@adonisjs/core/http'
 import { inject } from '@adonisjs/core'
 import User from '#models/user'
 import TokenTransaction from '#models/token_transaction'
+import DashboardService from '#services/dashboard_service'
 
 @inject()
 export default class AdminUsersController {
     /**
      * Display user details
      */
-    async show({ inertia, params }: HttpContext) {
+    async show({ inertia, params, request }: HttpContext) {
         const user = await User.findOrFail(params.id)
-        await user.load('verifications')
-        await user.load('tokenTransactions')
+        const perPage = 10
+
+        // Get page numbers from query params
+        const verificationPage = request.input('verification_page', 1)
+        const transactionPage = request.input('transaction_page', 1)
+
+        // Load paginated verifications and transactions
+        const verifications = await user
+            .related('verifications')
+            .query()
+            .orderBy('created_at', 'desc')
+            .paginate(verificationPage, perPage)
+
+        const tokenTransactions = await user
+            .related('tokenTransactions')
+            .query()
+            .orderBy('created_at', 'desc')
+            .paginate(transactionPage, perPage)
 
         return inertia.render('admin/users/show', {
             title: `User: ${user.fullName}`,
             user,
+            tokenBalance: await DashboardService.getTokenBalance(user.id),
+            verifications: verifications.all(),
+            tokenTransactions: tokenTransactions.all(),
+            verificationPagination: {
+                currentPage: verifications.currentPage,
+                totalPages: Math.ceil(verifications.total / perPage),
+                perPage,
+                total: verifications.total,
+            },
+            transactionPagination: {
+                currentPage: tokenTransactions.currentPage,
+                totalPages: Math.ceil(tokenTransactions.total / perPage),
+                perPage,
+                total: tokenTransactions.total,
+            },
         })
     }
 
@@ -51,7 +83,7 @@ export default class AdminUsersController {
             transactionType: 'credit',
             transactionReference: `ADMIN_CREDIT_${Date.now()}`,
             paymentProvider: 'admin',
-            status: 'completed',
+            status: 'success',
         })
 
         session.flash('success', `Added ${amount} tokens to ${user.fullName}'s balance`)

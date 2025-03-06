@@ -1,14 +1,4 @@
-import {
-    Coins,
-    FileText,
-    Home,
-    LogOut,
-    Settings,
-    ShieldCheck,
-    Users,
-    UserCog,
-    Sliders,
-} from 'lucide-react'
+import { Coins, Home, LogOut, Settings, ShieldCheck, Users, UserCog, Sliders } from 'lucide-react'
 import { Link, usePage } from '@inertiajs/react'
 import { adminRoutes } from '#shared/routes'
 

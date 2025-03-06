@@ -1,6 +1,13 @@
 import { Badge } from '@/components/ui/badge'
 
-type VerificationStatus = 'verified' | 'pending' | 'rejected' | 'success' | 'error'
+type VerificationStatus =
+    | 'verified'
+    | 'pending'
+    | 'rejected'
+    | 'success'
+    | 'error'
+    | 'failed'
+    | 'completed'
 
 interface VerificationStatusBadgeProps {
     status: VerificationStatus
@@ -14,6 +21,7 @@ export function VerificationStatusBadge({ status }: VerificationStatusBadgeProps
         rejected: 'error',
         error: 'error',
         failed: 'error',
+        completed: 'success',
     }[status]
 
     return <Badge variant={variant as 'success' | 'error' | 'warning' | 'default'}>{status}</Badge>

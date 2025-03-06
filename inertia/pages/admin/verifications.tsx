@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from '@inertiajs/react'
+import { Link, router } from '@inertiajs/react'
 import { Eye, Search, ShieldCheck } from 'lucide-react'
 import AdminLayout from '@/layouts/admin.layout'
 import { Input } from '@/components/ui/input'
@@ -17,13 +17,27 @@ import { adminRoutes } from '#shared/routes'
 import type Verification from '#models/verification'
 import { format } from 'date-fns'
 import { VerificationStatusBadge } from '@/components/verification-status-badge'
+import { PaginationData } from '@/interfaces/pagination'
+import { Pagination } from '@/components/ui/pagination'
 
 interface VerificationsProps {
     verifications: Verification[]
+    pagination: PaginationData
 }
 
-export default function Verifications({ verifications }: VerificationsProps) {
+export default function Verifications({ verifications, pagination }: VerificationsProps) {
     const [searchTerm, setSearchTerm] = useState('')
+
+    const handlePageChange = (page: number) => {
+        router.get(
+            window.location.pathname,
+            { page },
+            {
+                preserveScroll: true,
+                preserveState: true,
+            }
+        )
+    }
 
     const filteredVerifications = verifications.filter(
         (verification) =>
@@ -55,7 +69,7 @@ export default function Verifications({ verifications }: VerificationsProps) {
                 <Card className="bg-muted/30 shadow-none p-0">
                     <CardHeader className="p-6 border-b">
                         <CardTitle className="text-base">
-                            All Verifications ({filteredVerifications.length})
+                            All Verifications ({pagination.total})
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="p-6">
@@ -124,6 +138,10 @@ export default function Verifications({ verifications }: VerificationsProps) {
                                 )}
                             </TableBody>
                         </Table>
+
+                        <div className="mt-4">
+                            <Pagination {...pagination} onPageChange={handlePageChange} />
+                        </div>
                     </CardContent>
                 </Card>
             </div>
