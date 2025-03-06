@@ -8,6 +8,7 @@ import hash from '@adonisjs/core/services/hash'
 import { DbRememberMeTokensProvider } from '@adonisjs/auth/session'
 import { compose } from '@adonisjs/core/helpers'
 import { v4 as uuidv4 } from 'uuid'
+
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
     uids: ['email'],
     passwordColumnName: 'password',

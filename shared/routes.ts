@@ -18,6 +18,7 @@ export const adminRoutes = {
         dashboard: '/',
         users: '/users',
         verifications: '/verifications',
+        verificationSettings: '/verification-settings',
         transactions: '/transactions',
         admins: '/admins',
         logout: '/logout',

@@ -7,22 +7,22 @@ export default class VerificationSetting extends BaseModel {
     declare id: string
 
     @column()
-    declare verification_type: string
+    declare verificationType: string
 
     @column()
-    declare code_name: string
+    declare codeName: string
 
     @column()
-    declare is_enabled: boolean
+    declare isEnabled: boolean
 
     @column()
-    declare token_cost: number
+    declare tokenCost: number
 
     @column.dateTime({ autoCreate: true })
-    declare created_at: DateTime
+    declare createdAt: DateTime
 
     @column.dateTime({ autoCreate: true, autoUpdate: true })
-    declare updated_at: DateTime
+    declare updatedAt: DateTime
 
     @beforeCreate()
     static generateId(verificationSetting: VerificationSetting) {

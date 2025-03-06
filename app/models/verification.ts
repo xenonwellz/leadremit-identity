@@ -18,7 +18,7 @@ export default class Verification extends BaseModel {
     declare responseData: any
 
     @column()
-    declare status: string
+    declare status: 'error' | 'success'
 
     @column()
     declare creditsUsed: number

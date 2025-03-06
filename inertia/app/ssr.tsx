@@ -11,10 +11,10 @@ export default function render(page: any) {
             return pages[`../pages/${name}.tsx`]
         },
         setup: ({ App, props }) => (
-            <main>
-                <App {...props} />
-                <Toaster richColors />
-            </main>
+            // <main>
+            // </main>
+            // {/* <Toaster richColors /> */}
+            <App {...props} />
         ),
     })
 }

@@ -11,6 +11,8 @@ const AdminsController = () => import('#controllers/admin/admins_controller')
 const SettingsController = () => import('#controllers/admin/settings_controller')
 const VerificationController = () => import('#controllers/verification_controller')
 const TokensController = () => import('#controllers/tokens_controller')
+const VerificationSettingsController = () =>
+    import('#controllers/admin/verification_settings_controller')
 // User routes
 router
     .group(() => {
@@ -58,6 +60,14 @@ router
         router.post('users/:id/add-tokens', [AdminUsersController, 'addTokens'])
         router.get('verifications', [AdminDashboardController, 'verifications'])
         router.get('transactions', [AdminDashboardController, 'transactions'])
+
+        // Verification Settings Routes
+        router
+            .group(() => {
+                router.get('/', [VerificationSettingsController, 'index'])
+                router.put('/:id', [VerificationSettingsController, 'update'])
+            })
+            .prefix('verification-settings')
 
         // Admin management
         router

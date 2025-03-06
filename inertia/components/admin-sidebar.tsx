@@ -1,4 +1,14 @@
-import { Coins, FileText, Home, LogOut, Settings, ShieldCheck, Users, UserCog } from 'lucide-react'
+import {
+    Coins,
+    FileText,
+    Home,
+    LogOut,
+    Settings,
+    ShieldCheck,
+    Users,
+    UserCog,
+    Sliders,
+} from 'lucide-react'
 import { Link, usePage } from '@inertiajs/react'
 import { adminRoutes } from '#shared/routes'
 
@@ -31,6 +41,11 @@ const items = [
         title: 'Verifications',
         url: adminRoutes.app.verifications,
         icon: ShieldCheck,
+    },
+    {
+        title: 'Verification Settings',
+        url: adminRoutes.app.verificationSettings,
+        icon: Sliders,
     },
     {
         title: 'Transactions',

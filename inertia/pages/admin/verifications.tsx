@@ -4,7 +4,6 @@ import { Eye, Search, ShieldCheck } from 'lucide-react'
 import AdminLayout from '@/layouts/admin.layout'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import {
     Table,
     TableBody,
@@ -15,20 +14,9 @@ import {
 } from '@/components/ui/table'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { adminRoutes } from '#shared/routes'
-
-interface User {
-    id: string
-    fullName: string
-    email: string
-}
-
-interface Verification {
-    id: string
-    type: string
-    status: string
-    createdAt: string
-    user: User
-}
+import type Verification from '#models/verification'
+import { format } from 'date-fns'
+import { VerificationStatusBadge } from '@/components/verification-status-badge'
 
 interface VerificationsProps {
     verifications: Verification[]
@@ -41,7 +29,7 @@ export default function Verifications({ verifications }: VerificationsProps) {
         (verification) =>
             verification.user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
             verification.user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            verification.type.toLowerCase().includes(searchTerm.toLowerCase())
+            verification.verificationType.toLowerCase().includes(searchTerm.toLowerCase())
     )
 
     return (
@@ -79,6 +67,7 @@ export default function Verifications({ verifications }: VerificationsProps) {
                                     <TableHead>Email</TableHead>
                                     <TableHead>Status</TableHead>
                                     <TableHead>Date</TableHead>
+                                    <TableHead>Time</TableHead>
                                     <TableHead className="text-right">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -98,28 +87,27 @@ export default function Verifications({ verifications }: VerificationsProps) {
                                             <TableCell className="font-medium">
                                                 <div className="flex items-center">
                                                     <ShieldCheck className="h-4 w-4 mr-2 text-blue-500" />
-                                                    {verification.type.toUpperCase()}
+                                                    {verification.verificationType.toUpperCase()}
                                                 </div>
                                             </TableCell>
                                             <TableCell>{verification.user.fullName}</TableCell>
                                             <TableCell>{verification.user.email}</TableCell>
                                             <TableCell>
-                                                <Badge
-                                                    variant={
-                                                        verification.status === 'verified'
-                                                            ? 'success'
-                                                            : verification.status === 'pending'
-                                                              ? 'warning'
-                                                              : 'error'
-                                                    }
-                                                >
-                                                    {verification.status}
-                                                </Badge>
+                                                <VerificationStatusBadge
+                                                    status={verification.status}
+                                                />
                                             </TableCell>
                                             <TableCell>
-                                                {new Date(
-                                                    verification.createdAt
-                                                ).toLocaleDateString()}
+                                                {format(
+                                                    new Date(verification.createdAt.toString()),
+                                                    'MMM d, yyyy'
+                                                )}
+                                            </TableCell>
+                                            <TableCell>
+                                                {format(
+                                                    new Date(verification.createdAt.toString()),
+                                                    'hh:mm a'
+                                                )}
                                             </TableCell>
                                             <TableCell className="text-right">
                                                 <Button asChild size="sm" variant="ghost">

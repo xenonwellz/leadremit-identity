@@ -7,7 +7,6 @@ import {
     TableRow,
 } from '@/components/ui/table'
 import { Pagination } from '@/components/ui/pagination'
-import { Badge } from '@/components/ui/badge'
 import { Button } from './ui/button'
 import { Filter, X, ChevronDown, ChevronUp } from 'lucide-react'
 import { Input } from './ui/input'
@@ -17,6 +16,8 @@ import { format } from 'date-fns'
 import { VerificationFilters, VerificationTableProps } from '@/interfaces/verification'
 import { useState } from 'react'
 import Verification from '#models/verification'
+import { VerificationStatusBadge } from '@/components/verification-status-badge'
+
 interface FilterContentProps {
     setFilters: (filters: any) => void
     filters: VerificationFilters
@@ -182,9 +183,7 @@ const VerificationRow = ({ verification, isExpanded, onToggle }: VerificationRow
             {verification.verificationType.split('-').join(' ').toUpperCase()}
         </TableCell>
         <TableCell>
-            <Badge variant={verification.status === 'success' ? 'success' : 'error'}>
-                {verification.status}
-            </Badge>
+            <VerificationStatusBadge status={verification.status} />
         </TableCell>
         <TableCell>{format(new Date(verification.createdAt.toString()), 'MMM d, yyyy')}</TableCell>
         <TableCell>{format(new Date(verification.createdAt.toString()), 'h:mm a')}</TableCell>
