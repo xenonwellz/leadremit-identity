@@ -6,7 +6,7 @@ export default class VerificationsController {
      * Show verification form with available verification types
      */
     async show({ inertia }: HttpContext) {
-        const types = VerificationService.getAvailableTypes()
+        const types = await VerificationService.getAvailableTypes()
         return inertia.render('verify', { types })
     }
 
@@ -48,7 +48,7 @@ export default class VerificationsController {
 
         try {
             // Find verification type config
-            const verificationType = VerificationService.getVerificationType(type)
+            const verificationType = await VerificationService.getVerificationType(type)
 
             if (!verificationType) {
                 return this.renderWithError(inertia, {
@@ -60,7 +60,7 @@ export default class VerificationsController {
             const result = await VerificationService.verify(user.id, verificationType, idNumber)
 
             return inertia.render('verify', {
-                types: VerificationService.getAvailableTypes(),
+                types: await VerificationService.getAvailableTypes(),
                 response: result,
             })
         } catch (error) {
@@ -71,9 +71,9 @@ export default class VerificationsController {
         }
     }
 
-    private renderWithError(inertia: any, error: any) {
+    private async renderWithError(inertia: any, error: any) {
         return inertia.render('verify', {
-            types: VerificationService.getAvailableTypes(),
+            types: await VerificationService.getAvailableTypes(),
             response: {
                 success: false,
                 error,

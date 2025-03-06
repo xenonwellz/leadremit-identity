@@ -1,37 +1,47 @@
 import type { VerificationType } from '#interfaces/verification'
 import verificationConfig from '#config/verification'
 import Verification from '#models/verification'
+import VerificationSetting from '#models/verification_setting'
 import DashboardService from '#services/dashboard_service'
 import CIVService from '#services/civ_service'
 
+type VerificationConfigTypes = typeof verificationConfig.types
+type VerificationTypeKey = keyof VerificationConfigTypes
+
 export default class VerificationService {
     static async verify(userId: string, type: VerificationType, idNumber: string) {
-        const verificationTypeConfig = Object.values(verificationConfig.types).find(
-            (config) => config.id === type.id
-        )
+        // Get verification type from database
+        const verificationTypeConfig = await VerificationSetting.query()
+            .where('verification_type', type.id)
+            .where('is_enabled', true)
+            .first()
 
         if (!verificationTypeConfig) {
-            throw new Error('Unsupported verification type')
+            throw new Error('Unsupported or disabled verification type')
         }
 
         // Check token balance
         const tokenBalance = await DashboardService.getTokenBalance(userId)
-        if (tokenBalance < verificationTypeConfig.cost) {
+        if (tokenBalance < verificationTypeConfig.tokenCost) {
             throw new Error(
-                `Insufficient tokens. Required: ${verificationTypeConfig.cost}, Balance: ${tokenBalance}`
+                `Insufficient tokens. Required: ${verificationTypeConfig.tokenCost}, Balance: ${tokenBalance}`
             )
         }
 
         // Perform verification using CIV service
         let result
         try {
-            result = await this.performVerification(type.id, idNumber)
+            result = await this.performVerification(
+                verificationTypeConfig.verificationType,
+                idNumber
+            )
         } catch (error: any) {
             result = {
                 success: false,
                 error: {
                     code: 'VERIFICATION_FAILED',
-                    message: error.message || `${type.name} verification failed`,
+                    message:
+                        error.message || `${verificationTypeConfig.codeName} verification failed`,
                 },
             }
         }
@@ -39,15 +49,15 @@ export default class VerificationService {
         // Create verification record and deduct tokens
         await Verification.create({
             userId,
-            verificationType: type.id,
+            verificationType: verificationTypeConfig.verificationType,
             status: result.success ? 'success' : 'error',
             responseData: result,
-            creditsUsed: verificationTypeConfig.cost,
+            creditsUsed: verificationTypeConfig.tokenCost,
         })
 
         // Deduct tokens
         if (result.success) {
-            await DashboardService.deductTokens(userId, verificationTypeConfig.cost)
+            await DashboardService.deductTokens(userId, verificationTypeConfig.tokenCost)
         }
 
         return result
@@ -140,12 +150,39 @@ export default class VerificationService {
         }
     }
 
-    static getVerificationType(type: string) {
-        return Object.values(verificationConfig.types).find((t) => t.id === `${type}-verification`)
+    static async getVerificationType(type: string) {
+        const setting = await VerificationSetting.query()
+            .where('verification_type', `${type}-verification`)
+            .where('is_enabled', true)
+            .first()
+
+        if (!setting) {
+            return null
+        }
+
+        const configType = setting.verificationType as VerificationTypeKey
+        return {
+            id: setting.verificationType,
+            name: setting.codeName,
+            description: verificationConfig.types[configType]?.description || '',
+            cost: setting.tokenCost,
+        }
     }
 
-    static getAvailableTypes() {
-        return Object.values(verificationConfig.types)
+    static async getAvailableTypes() {
+        const settings = await VerificationSetting.query()
+            .where('is_enabled', true)
+            .orderBy('code_name')
+
+        return settings.map((setting) => {
+            const configType = setting.verificationType as VerificationTypeKey
+            return {
+                id: setting.verificationType,
+                name: setting.codeName,
+                description: verificationConfig.types[configType]?.description || '',
+                cost: setting.tokenCost,
+            }
+        })
     }
 
     static async getFilteredHistory(
