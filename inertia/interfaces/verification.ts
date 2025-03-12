@@ -1,3 +1,4 @@
+import React from 'react'
 import { PaginationData } from '#interfaces/pagination'
 import Verification from '#models/verification'
 

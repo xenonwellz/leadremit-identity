@@ -7,8 +7,9 @@ export default class UserSettingsController {
         })
     }
 
-    async update({ request, response }: HttpContext) {
-        const data = request.only(['name', 'phone', 'profile_photo'])
+    // async update({ request, response }: HttpContext) {
+    async update({ response }: HttpContext) {
+        // const data = request.only(['name', 'phone', 'profile_photo'])
         // Update user logic here
         return response.json({ success: true })
     }
