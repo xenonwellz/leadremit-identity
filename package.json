@@ -16,8 +16,8 @@
     },
     "imports": {
         "#controllers/*": "./app/controllers/*.js",
-        "#interfaces/*": "./inertia/interfaces/*.ts",
-        "#utils/*": "./app/utils/*.ts",
+        "#interfaces/*": "./inertia/interfaces/*.js",
+        "#utils/*": "./app/utils/*.js",
         "#exceptions/*": "./app/exceptions/*.js",
         "#models/*": "./app/models/*.js",
         "#mails/*": "./app/mails/*.js",
@@ -33,8 +33,8 @@
         "#tests/*": "./tests/*.js",
         "#start/*": "./start/*.js",
         "#config/*": "./config/*.js",
-        "#routes/*": "./routes/*.ts",
-        "#shared/*": "./shared/*.ts"
+        "#routes/*": "./routes/*.js",
+        "#shared/*": "./shared/*.js"
     },
     "devDependencies": {
         "@adonisjs/assembler": "^7.8.2",
