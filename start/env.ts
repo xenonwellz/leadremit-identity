@@ -38,5 +38,6 @@ export default await Env.create(new URL('../', import.meta.url), {
     NIBSS_API_KEY: Env.schema.string(),
 
     DOMAIN: Env.schema.string(),
+    ADMIN_DOMAIN: Env.schema.string(),
     LEADREMIT_API_KEY: Env.schema.string(),
 })

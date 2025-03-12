@@ -17,7 +17,7 @@ router
         router.post('login', [AdminAuthController, 'handleLogin'])
     })
     .use(middleware.guest({ guards: ['admin'] }))
-    .domain(`admin.${env.get('DOMAIN')}`)
+    .domain(env.get('ADMIN_DOMAIN'))
 
 router
     .group(() => {
@@ -60,4 +60,4 @@ router
         router.post('/settings', [SettingsController, 'updatePassword'])
     })
     .use(middleware.admin({ guards: ['admin'] }))
-    .domain(`admin.${env.get('DOMAIN')}`)
+    .domain(env.get('ADMIN_DOMAIN'))
